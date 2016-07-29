@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("Hopeless Pokémon Editor")]
-[assembly: AssemblyDescription("Hopeless Pokémon Editor")]
+[assembly: AssemblyDescription("Hopeless Pokémon Editor, Windows")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Lost")]
 [assembly: AssemblyProduct("Hopeless Pokémon Editor")]
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("8ad6a67c-ba4f-4715-ac05-09498a1ed62b")]
+[assembly: Guid("642a576f-7897-455d-bb83-873e94319275")]
 
 // Version information for an assembly consists of the following four values:
 //
