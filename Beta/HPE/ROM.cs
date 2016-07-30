@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Text;
+using Hopeless.Drawing;
 
 namespace Hopeless
 {
@@ -69,6 +70,11 @@ namespace Hopeless
             return buffer[pos++];
         }
 
+        public byte PeekByte()
+        {
+            return buffer[pos];
+        }
+
         public ushort ReadUInt16()
         {
             return (ushort)(buffer[pos++] | (buffer[pos++] << 8));
@@ -119,11 +125,6 @@ namespace Hopeless
             return ptr & 0x1FFFFFF;
         }
 
-        int ReadInt24()
-        {
-            return buffer[pos++] | (buffer[pos++] << 8) | (buffer[pos++] << 16);
-        }
-
         public byte[] ReadCompressedBytes()
         {
             if (ReadByte() != 0x10) return new byte[0];
@@ -163,7 +164,7 @@ namespace Hopeless
             return buffer;
         }
 
-        public int ReadLz77CompressedSize()
+        public int ReadCompressedSize()
         {
             if (ReadByte() != 0x10) return -1;
 
@@ -205,23 +206,33 @@ namespace Hopeless
             return count;
         }
 
+        public bool PeekCompressed()
+        {
+            return PeekByte() == 0x10;
+        }
+
+        int ReadInt24()
+        {
+            return buffer[pos++] | (buffer[pos++] << 8) | (buffer[pos++] << 16);
+        }
+
         public Color ReadColor()
         {
             var c = ReadUInt16();
             return Color.FromArgb((c & 0x1F) << 3, (c >> 5 & 0x1F) << 3, (c >> 10 & 0x1F) << 3);
         }
 
-        public Color[] ReadPalette(int colors = 16)
+        public Palette ReadPalette(int colors = 16)
         {
-            var pal = new Color[colors];
+            var pal = new Palette(colors);
             for (int i = 0; i < colors; i++) pal[i] = ReadColor();
             return pal;
         }
 
-        public Color[] ReadCompressedPalette()
+        public Palette ReadCompressedPalette()
         {
             var buffer = ReadCompressedBytes();
-            var pal = new Color[buffer.Length / 2];
+            var pal = new Palette(buffer.Length / 2);
             for (int i = 0; i < pal.Length; i++)
             {
                 var color = (buffer[i * 2 + 1] << 8) | buffer[i * 2];
@@ -296,7 +307,7 @@ namespace Hopeless
             WriteBytes(Encoding.UTF8.GetBytes(str));
         }
 
-        public void WriteCompressedBytes(byte[] buffer)
+        /*public void WriteCompressedBytes(byte[] buffer)
         {
             // Adapted from NSE 2.X by link12552
 
@@ -333,14 +344,10 @@ namespace Hopeless
                 }
                 else
                 {
-                    int match = -1;
-                    if (actualPos + 1 < buffer.Length)
-                    {
-
-                    }
+                    
                 }
             }
-        }
+        }*/
 
         #endregion
 

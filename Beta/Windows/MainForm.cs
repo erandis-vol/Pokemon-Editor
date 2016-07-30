@@ -41,7 +41,16 @@ namespace Hopeless
                 var regularPalette = rom.ReadCompressedPalette();
 
                 // draw the palette
-
+                var b = new Bitmap(256, 256);
+                using (var g = Graphics.FromImage(b))
+                {
+                    for (int i = 0; i < regularPalette.Length; i++)
+                    {
+                        int x = i % 4, y = i / 4;
+                        g.FillRectangle(new SolidBrush(regularPalette[i]), x * 16, y * 16, 16, 16);
+                    }
+                }
+                pictureBox2.Image = b;
 
                 // todo: draw
             }
