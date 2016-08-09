@@ -2,14 +2,14 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Xml;
 
-namespace Hopeless
+namespace Lost
 {
     using Section = Dictionary<string, string>;
 
     // basic UTF-8 ini/xml settings data
+    // yml/json would be nice to have as well
     public class Settings
     {
         Dictionary<string, Section> sections = new Dictionary<string, Section>();
@@ -25,13 +25,32 @@ namespace Hopeless
             }
         }
 
+        public Settings(Settings parent, string[] sections)
+        {
+            foreach (var section in parent.sections.Keys)
+            {
+                if (sections.Contains(section))
+                    this.sections[section] = new Section(parent.sections[section]);
+            }
+        }
+
         public static Settings FromFile(string filePath, string format)
         {
             var settings = new Settings();
 
-            if (format == "ini") settings.LoadINI(filePath);
-            else if (format == "xml") settings.LoadXML(filePath);
-            else throw new NotSupportedException($"Settings format {format} is not supported!");
+
+            switch (format)
+            {
+                case "ini":
+                    settings.LoadINI(filePath);
+                    break;
+                case "xml":
+                    settings.LoadXML(filePath);
+                    break;
+
+                default:
+                    throw new NotSupportedException($"Settings format {format} is not supported!");
+            }
 
             return settings;
         }
@@ -108,9 +127,18 @@ namespace Hopeless
 
         public void Save(string filePath, string format)
         {
-            if (format == "xml") SaveXML(filePath);
-            else if (format == "ini") SaveINI(filePath);
-            else throw new NotSupportedException($"Settings format {format} is not supported!");
+            switch (format)
+            {
+                case "ini":
+                    SaveINI(filePath);
+                    break;
+                case "xml":
+                    SaveXML(filePath);
+                    break;
+
+                default:
+                    throw new NotSupportedException($"Settings format {format} is not supported!");
+            }
         }
 
         void SaveINI(string filePath)
@@ -162,11 +190,16 @@ namespace Hopeless
             return false;
         }
 
-        public int GetInt32(string section, string key)
+        public int GetInt32(string section, string key, int fromBase = 10)
         {
-            int i;
-            if (int.TryParse(GetString(section, key), out i)) return i;
-            return 0;
+            try
+            {
+                return Convert.ToInt32(GetString(section, key), fromBase);
+            }
+            catch
+            {
+                return 0;
+            }
         }
 
         public double GetDouble(string section, string key)
@@ -207,21 +240,25 @@ namespace Hopeless
             Set(section, key, string.Join(",", values));
         }
 
-#if DEBUG
-        public override string ToString()
+        public bool ContainsSection(string section)
         {
-            var writer = new StringBuilder();
-            foreach (var section in sections.Keys)
-            {
-                writer.AppendFormat("{0}:\n", section);
-                foreach (var entry in sections[section].Keys)
-                {
-                    writer.AppendFormat("\t{0}={1}\n", entry, sections[section][entry]);
-                }
-                writer.AppendLine();
-            }
-            return writer.ToString();
+            return sections.ContainsKey(section);
         }
-#endif
+
+        public bool ContainsKey(string section, string key)
+        {
+            if (sections.ContainsKey(section))
+                return sections.ContainsKey(key);
+
+            return false;
+        }
+
+        public Section GetSection(string section)
+        {
+            if (sections.ContainsKey(section))
+                return sections[section];
+
+            return null;
+        }
     }
 }

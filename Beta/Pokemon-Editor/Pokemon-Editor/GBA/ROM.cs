@@ -3,44 +3,72 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Text;
-using Hopeless.Drawing;
 
-namespace Hopeless
+namespace Lost.GBA
 {
-    public class ROM
+    public class ROM : IDisposable
     {
         private byte[] buffer;
         private int pos = 0;
+        private string filePath;
+        private FileSystemWatcher fileWatcher;
+        private bool ignoreChange;
+
+        private bool disposed;
 
         public ROM(string filePath)
         {
-            if (!File.Exists(filePath))
+            try
             {
-                throw new FileNotFoundException("Could not find " + filePath + "!");
+                // read contents of file into buffer
+                using (var fs = File.Open(filePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+                {
+                    buffer = new byte[fs.Length];
+                    fs.Read(buffer, 0, buffer.Length);
+                }
+
+                // create file watcher to monitor ROM being modified
+                fileWatcher = new FileSystemWatcher();
+                fileWatcher.Path = Path.GetDirectoryName(filePath);
+                fileWatcher.Filter = "*.gba";
+
+                fileWatcher.Changed += OnSourceFileChanged;
+                fileWatcher.Renamed += OnSourceFileRenamed;
+
+                fileWatcher.EnableRaisingEvents = true;
+            }
+            catch
+            {
+                throw new Exception($"Unable to open {filePath}!");
             }
 
-            // Read contents of file into buffer
-            // We have to do it this way so that we can interface with A-Map
-            using (var fs = File.Open(filePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
-            {
-                buffer = new byte[fs.Length];
-                fs.Read(buffer, 0, buffer.Length);
-            }
+            this.filePath = filePath;
         }
 
         ~ROM()
         {
+            Dispose();
+        }
+
+        public void Dispose()
+        {
+            if (disposed) return;
+            disposed = true;
+
+            fileWatcher.Dispose();
             buffer = null;
         }
 
-        public void Save(string filePath)
+        public void Save()
         {
-            // Again, write using a filestream
-            // Using File.WriteAllBytes does not work with greedy programs like A-Map
+            if (string.IsNullOrEmpty(filePath)) return;
+
             using (var fs = File.Open(filePath, FileMode.OpenOrCreate, FileAccess.Write, FileShare.ReadWrite))
             {
                 fs.Write(buffer, 0, buffer.Length);
             }
+
+            ignoreChange = true;
         }
 
         public void Seek(int offset)
@@ -73,6 +101,11 @@ namespace Hopeless
         public byte PeekByte()
         {
             return buffer[pos];
+        }
+
+        public sbyte ReadSByte()
+        {
+            return (sbyte)ReadByte();
         }
 
         public ushort ReadUInt16()
@@ -114,16 +147,34 @@ namespace Hopeless
 
         public int ReadPointer()
         {
-            // Read pointer data
+            // read value
             var ptr = ReadInt32();
 
-            // A pointer must be between 0x0 and 0x1FFFFFF to be valid on the GBA
+            // return on blank pointer
+            if (ptr == 0) return 0;
+
+            // a pointer must be between 0x0 and 0x1FFFFFF to be valid on the GBA
             // ROM pointer format is OFFSET | 0x8000000, so 0x8000000 <= POINTER <= 0x9FFFFFF
             if (ptr < 0x8000000 || ptr > 0x9FFFFFF) throw new Exception(string.Format("Bad pointer at 0x{0:X6}", pos - 4));
 
-            // Easy way to extract
+            // easy way to extract
             return ptr & 0x1FFFFFF;
         }
+
+        // read a GBA string
+        /*public string ReadText(int length, CharacterEncoding encoding = CharacterEncoding.English)
+        {
+            return TextTable.GetString(ReadBytes(length), encoding);
+        }
+
+        public string[] ReadTextTable(int stringLength, int tableSize, CharacterEncoding encoding = CharacterEncoding.English)
+        {
+            var table = new string[tableSize];
+            for (int i = 0; i < tableSize; i++)
+                table[i] = ReadText(stringLength, encoding);
+
+            return table;
+        }*/
 
         public byte[] ReadCompressedBytes()
         {
@@ -222,17 +273,17 @@ namespace Hopeless
             return Color.FromArgb((c & 0x1F) << 3, (c >> 5 & 0x1F) << 3, (c >> 10 & 0x1F) << 3);
         }
 
-        public Palette ReadPalette(int colors = 16)
+        public Color[] ReadPalette(int colors = 16)
         {
-            var pal = new Palette(colors);
+            var pal = new Color[colors];
             for (int i = 0; i < colors; i++) pal[i] = ReadColor();
             return pal;
         }
 
-        public Palette ReadCompressedPalette()
+        public Color[] ReadCompressedPalette()
         {
             var buffer = ReadCompressedBytes();
-            var pal = new Palette(buffer.Length / 2);
+            var pal = new Color[buffer.Length / 2];
             for (int i = 0; i < pal.Length; i++)
             {
                 var color = (buffer[i * 2 + 1] << 8) | buffer[i * 2];
@@ -248,6 +299,11 @@ namespace Hopeless
         public void WriteByte(byte value)
         {
             buffer[pos++] = value;
+        }
+
+        public void WriteSByte(sbyte value)
+        {
+            WriteByte((byte)value);
         }
 
         public void WriteUInt16(ushort value)
@@ -307,48 +363,6 @@ namespace Hopeless
             WriteBytes(Encoding.UTF8.GetBytes(str));
         }
 
-        /*public void WriteCompressedBytes(byte[] buffer)
-        {
-            // Adapted from NSE 2.X by link12552
-
-            // ensure proper data size
-            if (buffer.Length > 0xFFFFFF)
-                throw new Exception("Cannot compressed buffer longer than 0xFFFFFF bytes!");
-
-            var output = new List<byte>();
-            var preOutput = new List<byte>();
-
-            // compressed data header
-            output.Add(0x10);                       // signature byte
-            output.Add((byte)buffer.Length);        // i24, decompressed length
-            output.Add((byte)(buffer.Length >> 8));
-            output.Add((byte)(buffer.Length >> 16));
-
-            // provide starting data for compression
-            preOutput.Add(buffer[0]);
-            preOutput.Add(buffer[1]);
-
-            int actualPos = 2; byte shortPos = 2;
-            byte flags = 0;
-
-            while (actualPos < buffer.Length)
-            {
-                if (shortPos >= 8)
-                {
-                    output.Add(flags);
-                    output.AddRange(preOutput);
-
-                    flags = 0;
-                    preOutput.Clear();
-                    shortPos = 0;
-                }
-                else
-                {
-                    
-                }
-            }
-        }*/
-
         #endregion
 
         #region Search
@@ -382,6 +396,11 @@ namespace Hopeless
 
         #region Properties
 
+        public string FilePath
+        {
+            get { return filePath; }
+        }
+
         public int Length
         {
             get { return buffer.Length; }
@@ -390,8 +409,6 @@ namespace Hopeless
         public int Position
         {
             get { return pos; }
-
-            // User should use Seek!
             set
             {
                 pos = value;
@@ -412,6 +429,7 @@ namespace Hopeless
         }
 
         // ROM specific properties
+        // TODO: better to store these as existing strings
 
         public string Name
         {
@@ -439,5 +457,36 @@ namespace Hopeless
 
         #endregion
 
+        void OnSourceFileChanged(object sender, FileSystemEventArgs e)
+        {
+            Console.WriteLine($"ROM {e.FullPath} changed {e.ChangeType}.");
+            if (ignoreChange)
+            {
+                ignoreChange = false;
+                return;
+            }
+
+            if (e.FullPath == filePath)
+            {
+                Console.WriteLine("Reloading buffer...");
+                using (var fs = File.Open(filePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+                {
+                    if (buffer.Length != fs.Length)
+                        buffer = new byte[fs.Length];
+
+                    fs.Read(buffer, 0, buffer.Length);
+                }
+            }
+        }
+
+        void OnSourceFileRenamed(object sender, RenamedEventArgs e)
+        {
+            Console.WriteLine($"{e.OldFullPath} renamed to {e.FullPath}!");
+
+            if (e.OldFullPath == filePath)
+            {
+                filePath = e.FullPath;
+            }
+        }
     }
 }

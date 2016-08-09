@@ -5,12 +5,12 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Hopeless Pokémon Editor")]
-[assembly: AssemblyDescription("Hopeless Pokémon Editor")]
+[assembly: AssemblyTitle("Pokemon-Editor")]
+[assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Lost")]
-[assembly: AssemblyProduct("Hopeless Pokémon Editor")]
-[assembly: AssemblyCopyright("Copyright © Lost 2016")]
+[assembly: AssemblyCompany("")]
+[assembly: AssemblyProduct("Pokemon-Editor")]
+[assembly: AssemblyCopyright("Copyright ©  2016")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("8ad6a67c-ba4f-4715-ac05-09498a1ed62b")]
+[assembly: Guid("d8ca60d3-9a76-40ef-9274-d4955c32100f")]
 
 // Version information for an assembly consists of the following four values:
 //
