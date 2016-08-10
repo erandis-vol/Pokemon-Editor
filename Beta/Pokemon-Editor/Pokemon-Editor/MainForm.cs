@@ -13,6 +13,8 @@ namespace Lost
 {
     public partial class MainForm : Form
     {
+        bool ignore = false;
+
         public MainForm()
         {
             InitializeComponent();
@@ -61,6 +63,20 @@ namespace Lost
 
             cBaseType2.Items.Clear();
             cBaseType2.Items.AddRange(types);
+
+            cBaseAbility.Items.Clear();
+            cBaseAbility.Items.AddRange(abilities);
+
+            cBaseAbility2.Items.Clear();
+            cBaseAbility2.Items.AddRange(abilities);
+
+            cBaseItem.Items.Clear();
+            cBaseItem.Items.AddRange(items);
+
+            cBaseItem2.Items.Clear();
+            cBaseItem2.Items.AddRange(items);
+
+            DisplayBlankPokemon();
         }
 
         private void saveToolStripMenuItem_Click(object sender, EventArgs e)
@@ -73,20 +89,7 @@ namespace Lost
             if (rom == null) return;
 
             var pokemonIndex = listBox1.SelectedIndex;
-
-            tBaseHealth.Value = pokemon[pokemonIndex].HP;
-            tBaseAttack.Value = pokemon[pokemonIndex].Attack;
-            tBaseDefense.Value = pokemon[pokemonIndex].Defense;
-            tBaseSpecialAttack.Value = pokemon[pokemonIndex].SpecialAttack;
-            tBaseSpecialDefense.Value = pokemon[pokemonIndex].SpecialDefense;
-            tBaseSpeed.Value = pokemon[pokemonIndex].Speed;
-
-            tBaseHealth2.Value = pokemon[pokemonIndex].EffortYield & 3;
-            tBaseAttack2.Value = pokemon[pokemonIndex].EffortYield >> 2 & 3;
-            tBaseDefense2.Value = pokemon[pokemonIndex].EffortYield >> 4 & 3;
-            tBaseSpecialAttack2.Value = pokemon[pokemonIndex].EffortYield >> 6 & 3;
-            tBaseSpecialDefense2.Value = pokemon[pokemonIndex].EffortYield >> 8 & 3;
-            tBaseSpeed2.Value = pokemon[pokemonIndex].EffortYield >> 10 & 3;
+            DisplayPokemon(pokemonIndex);
         }
     }
 }

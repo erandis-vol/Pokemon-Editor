@@ -36,6 +36,21 @@
             this.listBox1 = new System.Windows.Forms.ListBox();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.groupBox6 = new System.Windows.Forms.GroupBox();
+            this.label14 = new System.Windows.Forms.Label();
+            this.tBaseHatchTime = new Lost.NumberBox();
+            this.label13 = new System.Windows.Forms.Label();
+            this.cBaseEggGroup2 = new System.Windows.Forms.ComboBox();
+            this.cBaseEggGroup = new System.Windows.Forms.ComboBox();
+            this.groupBox5 = new System.Windows.Forms.GroupBox();
+            this.cBaseItem2 = new System.Windows.Forms.ComboBox();
+            this.cBaseItem = new System.Windows.Forms.ComboBox();
+            this.groupBox4 = new System.Windows.Forms.GroupBox();
+            this.cBaseAbility2 = new System.Windows.Forms.ComboBox();
+            this.cBaseAbility = new System.Windows.Forms.ComboBox();
+            this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.cBaseType2 = new System.Windows.Forms.ComboBox();
+            this.cBaseType = new System.Windows.Forms.ComboBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.tBaseSpeed2 = new Lost.NumberBox();
             this.label7 = new System.Windows.Forms.Label();
@@ -63,15 +78,21 @@
             this.tBaseHealth = new Lost.NumberBox();
             this.label1 = new System.Windows.Forms.Label();
             this.tabPage2 = new System.Windows.Forms.TabPage();
-            this.groupBox3 = new System.Windows.Forms.GroupBox();
-            this.cBaseType = new System.Windows.Forms.ComboBox();
-            this.cBaseType2 = new System.Windows.Forms.ComboBox();
+            this.listEvolutions = new System.Windows.Forms.ListView();
+            this.colEvolutionType = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.colEvolutionParameter = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.colEvolutionTarget = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.colEvolutionPadding = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.menuStrip1.SuspendLayout();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
+            this.groupBox6.SuspendLayout();
+            this.groupBox5.SuspendLayout();
+            this.groupBox4.SuspendLayout();
+            this.groupBox3.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox1.SuspendLayout();
-            this.groupBox3.SuspendLayout();
+            this.tabPage2.SuspendLayout();
             this.SuspendLayout();
             // 
             // menuStrip1
@@ -122,6 +143,9 @@
             // 
             // tabControl1
             // 
+            this.tabControl1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.tabControl1.Controls.Add(this.tabPage1);
             this.tabControl1.Controls.Add(this.tabPage2);
             this.tabControl1.Location = new System.Drawing.Point(282, 31);
@@ -132,6 +156,9 @@
             // 
             // tabPage1
             // 
+            this.tabPage1.Controls.Add(this.groupBox6);
+            this.tabPage1.Controls.Add(this.groupBox5);
+            this.tabPage1.Controls.Add(this.groupBox4);
             this.tabPage1.Controls.Add(this.groupBox3);
             this.tabPage1.Controls.Add(this.groupBox2);
             this.tabPage1.Controls.Add(this.groupBox1);
@@ -142,6 +169,180 @@
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "Base Stats.";
             this.tabPage1.UseVisualStyleBackColor = true;
+            // 
+            // groupBox6
+            // 
+            this.groupBox6.Controls.Add(this.label14);
+            this.groupBox6.Controls.Add(this.tBaseHatchTime);
+            this.groupBox6.Controls.Add(this.label13);
+            this.groupBox6.Controls.Add(this.cBaseEggGroup2);
+            this.groupBox6.Controls.Add(this.cBaseEggGroup);
+            this.groupBox6.Location = new System.Drawing.Point(6, 201);
+            this.groupBox6.Name = "groupBox6";
+            this.groupBox6.Size = new System.Drawing.Size(276, 109);
+            this.groupBox6.TabIndex = 5;
+            this.groupBox6.TabStop = false;
+            this.groupBox6.Text = "Breeding";
+            // 
+            // label14
+            // 
+            this.label14.AutoSize = true;
+            this.label14.Location = new System.Drawing.Point(6, 84);
+            this.label14.Name = "label14";
+            this.label14.Size = new System.Drawing.Size(80, 17);
+            this.label14.TabIndex = 6;
+            this.label14.Text = "Hatch Time";
+            // 
+            // tBaseHatchTime
+            // 
+            this.tBaseHatchTime.Location = new System.Drawing.Point(94, 81);
+            this.tBaseHatchTime.MaximumValue = 255;
+            this.tBaseHatchTime.MinimumValue = 0;
+            this.tBaseHatchTime.Name = "tBaseHatchTime";
+            this.tBaseHatchTime.Size = new System.Drawing.Size(56, 22);
+            this.tBaseHatchTime.TabIndex = 5;
+            this.tBaseHatchTime.Text = "0";
+            this.tBaseHatchTime.Value = 0;
+            // 
+            // label13
+            // 
+            this.label13.AutoSize = true;
+            this.label13.Location = new System.Drawing.Point(6, 24);
+            this.label13.Name = "label13";
+            this.label13.Size = new System.Drawing.Size(84, 17);
+            this.label13.TabIndex = 4;
+            this.label13.Text = "Egg Groups";
+            // 
+            // cBaseEggGroup2
+            // 
+            this.cBaseEggGroup2.FormattingEnabled = true;
+            this.cBaseEggGroup2.Items.AddRange(new object[] {
+            "-------",
+            "Monster",
+            "Water 1",
+            "Bug",
+            "Flying",
+            "Field",
+            "Fairy",
+            "Grass",
+            "Human-Like",
+            "Water 3",
+            "Mineral",
+            "Amorphous",
+            "Water 2",
+            "Ditto",
+            "Dragon",
+            "Undiscovered"});
+            this.cBaseEggGroup2.Location = new System.Drawing.Point(94, 51);
+            this.cBaseEggGroup2.Name = "cBaseEggGroup2";
+            this.cBaseEggGroup2.Size = new System.Drawing.Size(176, 24);
+            this.cBaseEggGroup2.TabIndex = 3;
+            // 
+            // cBaseEggGroup
+            // 
+            this.cBaseEggGroup.FormattingEnabled = true;
+            this.cBaseEggGroup.Items.AddRange(new object[] {
+            "-------",
+            "Monster",
+            "Water 1",
+            "Bug",
+            "Flying",
+            "Field",
+            "Fairy",
+            "Grass",
+            "Human-Like",
+            "Water 3",
+            "Mineral",
+            "Amorphous",
+            "Water 2",
+            "Ditto",
+            "Dragon",
+            "Undiscovered"});
+            this.cBaseEggGroup.Location = new System.Drawing.Point(94, 21);
+            this.cBaseEggGroup.Name = "cBaseEggGroup";
+            this.cBaseEggGroup.Size = new System.Drawing.Size(176, 24);
+            this.cBaseEggGroup.TabIndex = 2;
+            // 
+            // groupBox5
+            // 
+            this.groupBox5.Controls.Add(this.cBaseItem2);
+            this.groupBox5.Controls.Add(this.cBaseItem);
+            this.groupBox5.Location = new System.Drawing.Point(288, 180);
+            this.groupBox5.Name = "groupBox5";
+            this.groupBox5.Size = new System.Drawing.Size(188, 81);
+            this.groupBox5.TabIndex = 4;
+            this.groupBox5.TabStop = false;
+            this.groupBox5.Text = "Held Items";
+            // 
+            // cBaseItem2
+            // 
+            this.cBaseItem2.FormattingEnabled = true;
+            this.cBaseItem2.Location = new System.Drawing.Point(6, 51);
+            this.cBaseItem2.Name = "cBaseItem2";
+            this.cBaseItem2.Size = new System.Drawing.Size(176, 24);
+            this.cBaseItem2.TabIndex = 1;
+            // 
+            // cBaseItem
+            // 
+            this.cBaseItem.FormattingEnabled = true;
+            this.cBaseItem.Location = new System.Drawing.Point(6, 21);
+            this.cBaseItem.Name = "cBaseItem";
+            this.cBaseItem.Size = new System.Drawing.Size(176, 24);
+            this.cBaseItem.TabIndex = 0;
+            // 
+            // groupBox4
+            // 
+            this.groupBox4.Controls.Add(this.cBaseAbility2);
+            this.groupBox4.Controls.Add(this.cBaseAbility);
+            this.groupBox4.Location = new System.Drawing.Point(288, 93);
+            this.groupBox4.Name = "groupBox4";
+            this.groupBox4.Size = new System.Drawing.Size(188, 81);
+            this.groupBox4.TabIndex = 3;
+            this.groupBox4.TabStop = false;
+            this.groupBox4.Text = "Abilities";
+            // 
+            // cBaseAbility2
+            // 
+            this.cBaseAbility2.FormattingEnabled = true;
+            this.cBaseAbility2.Location = new System.Drawing.Point(6, 51);
+            this.cBaseAbility2.Name = "cBaseAbility2";
+            this.cBaseAbility2.Size = new System.Drawing.Size(176, 24);
+            this.cBaseAbility2.TabIndex = 1;
+            // 
+            // cBaseAbility
+            // 
+            this.cBaseAbility.FormattingEnabled = true;
+            this.cBaseAbility.Location = new System.Drawing.Point(6, 21);
+            this.cBaseAbility.Name = "cBaseAbility";
+            this.cBaseAbility.Size = new System.Drawing.Size(176, 24);
+            this.cBaseAbility.TabIndex = 0;
+            // 
+            // groupBox3
+            // 
+            this.groupBox3.Controls.Add(this.cBaseType2);
+            this.groupBox3.Controls.Add(this.cBaseType);
+            this.groupBox3.Location = new System.Drawing.Point(288, 6);
+            this.groupBox3.Name = "groupBox3";
+            this.groupBox3.Size = new System.Drawing.Size(188, 81);
+            this.groupBox3.TabIndex = 2;
+            this.groupBox3.TabStop = false;
+            this.groupBox3.Text = "Types";
+            // 
+            // cBaseType2
+            // 
+            this.cBaseType2.FormattingEnabled = true;
+            this.cBaseType2.Location = new System.Drawing.Point(6, 51);
+            this.cBaseType2.Name = "cBaseType2";
+            this.cBaseType2.Size = new System.Drawing.Size(176, 24);
+            this.cBaseType2.TabIndex = 1;
+            // 
+            // cBaseType
+            // 
+            this.cBaseType.FormattingEnabled = true;
+            this.cBaseType.Location = new System.Drawing.Point(6, 21);
+            this.cBaseType.Name = "cBaseType";
+            this.cBaseType.Size = new System.Drawing.Size(176, 24);
+            this.cBaseType.TabIndex = 0;
             // 
             // groupBox2
             // 
@@ -439,6 +640,7 @@
             // 
             // tabPage2
             // 
+            this.tabPage2.Controls.Add(this.listEvolutions);
             this.tabPage2.Location = new System.Drawing.Point(4, 25);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
@@ -447,32 +649,43 @@
             this.tabPage2.Text = "Evolutions";
             this.tabPage2.UseVisualStyleBackColor = true;
             // 
-            // groupBox3
+            // listEvolutions
             // 
-            this.groupBox3.Controls.Add(this.cBaseType2);
-            this.groupBox3.Controls.Add(this.cBaseType);
-            this.groupBox3.Location = new System.Drawing.Point(288, 6);
-            this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(188, 81);
-            this.groupBox3.TabIndex = 2;
-            this.groupBox3.TabStop = false;
-            this.groupBox3.Text = "Types";
+            this.listEvolutions.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.listEvolutions.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.colEvolutionType,
+            this.colEvolutionParameter,
+            this.colEvolutionTarget,
+            this.colEvolutionPadding});
+            this.listEvolutions.FullRowSelect = true;
+            this.listEvolutions.GridLines = true;
+            this.listEvolutions.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
+            this.listEvolutions.Location = new System.Drawing.Point(6, 6);
+            this.listEvolutions.Name = "listEvolutions";
+            this.listEvolutions.Size = new System.Drawing.Size(470, 157);
+            this.listEvolutions.TabIndex = 0;
+            this.listEvolutions.UseCompatibleStateImageBehavior = false;
+            this.listEvolutions.View = System.Windows.Forms.View.Details;
             // 
-            // cBaseType
+            // colEvolutionType
             // 
-            this.cBaseType.FormattingEnabled = true;
-            this.cBaseType.Location = new System.Drawing.Point(6, 21);
-            this.cBaseType.Name = "cBaseType";
-            this.cBaseType.Size = new System.Drawing.Size(176, 24);
-            this.cBaseType.TabIndex = 0;
+            this.colEvolutionType.Text = "Type";
             // 
-            // cBaseType2
+            // colEvolutionParameter
             // 
-            this.cBaseType2.FormattingEnabled = true;
-            this.cBaseType2.Location = new System.Drawing.Point(6, 51);
-            this.cBaseType2.Name = "cBaseType2";
-            this.cBaseType2.Size = new System.Drawing.Size(176, 24);
-            this.cBaseType2.TabIndex = 1;
+            this.colEvolutionParameter.Text = "Parameter";
+            this.colEvolutionParameter.Width = 80;
+            // 
+            // colEvolutionTarget
+            // 
+            this.colEvolutionTarget.Text = "Target";
+            this.colEvolutionTarget.Width = 96;
+            // 
+            // colEvolutionPadding
+            // 
+            this.colEvolutionPadding.Text = "Padding";
+            this.colEvolutionPadding.Width = 64;
             // 
             // MainForm
             // 
@@ -491,11 +704,16 @@
             this.menuStrip1.PerformLayout();
             this.tabControl1.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
+            this.groupBox6.ResumeLayout(false);
+            this.groupBox6.PerformLayout();
+            this.groupBox5.ResumeLayout(false);
+            this.groupBox4.ResumeLayout(false);
+            this.groupBox3.ResumeLayout(false);
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
-            this.groupBox3.ResumeLayout(false);
+            this.tabPage2.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -541,6 +759,23 @@
         private System.Windows.Forms.GroupBox groupBox3;
         private System.Windows.Forms.ComboBox cBaseType2;
         private System.Windows.Forms.ComboBox cBaseType;
+        private System.Windows.Forms.GroupBox groupBox4;
+        private System.Windows.Forms.ComboBox cBaseAbility2;
+        private System.Windows.Forms.ComboBox cBaseAbility;
+        private System.Windows.Forms.GroupBox groupBox5;
+        private System.Windows.Forms.ComboBox cBaseItem2;
+        private System.Windows.Forms.ComboBox cBaseItem;
+        private System.Windows.Forms.GroupBox groupBox6;
+        private System.Windows.Forms.ComboBox cBaseEggGroup2;
+        private System.Windows.Forms.ComboBox cBaseEggGroup;
+        private System.Windows.Forms.Label label13;
+        private System.Windows.Forms.Label label14;
+        private NumberBox tBaseHatchTime;
+        private System.Windows.Forms.ListView listEvolutions;
+        private System.Windows.Forms.ColumnHeader colEvolutionType;
+        private System.Windows.Forms.ColumnHeader colEvolutionParameter;
+        private System.Windows.Forms.ColumnHeader colEvolutionTarget;
+        private System.Windows.Forms.ColumnHeader colEvolutionPadding;
     }
 }
 

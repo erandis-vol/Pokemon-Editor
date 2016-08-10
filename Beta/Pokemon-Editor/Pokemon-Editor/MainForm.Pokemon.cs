@@ -3,6 +3,7 @@ using System.IO;
 using System.Drawing;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -25,6 +26,33 @@ namespace Lost
         string[] types;
         string[] abilities;
         string[] items;
+
+        // limits
+        int pokemonCount;
+        int evolutionCount;
+
+        int typeCount;
+        int abilityCount;
+        int itemCount;
+
+        // TODO: remove this thing
+        string[] evolutionTypes = "-------,Friendship,Friendship (Day),Friendship (Night),Level,Trade,Trade (w/ Item),Stone,ATK > DEF,ATK = DEF,ATK < DEF,High Personality,Low Personality,Spawn a Second,Create Spawn,Beauty".Split(',');
+        Dictionary<int, string> evolutionParameters = new Dictionary<int, string>()
+        {
+            {4, "level" },
+            {6, "item" },
+            {7, "item" },
+            {8, "level" },
+            {9, "level" },
+            {10, "level" },
+            {11, "level" },
+            {12, "level" },
+            {13, "level" },
+            {14, "level" },
+
+            {254, "item" },
+        };
+
 
         public bool OpenROM(string filename)
         {
@@ -68,22 +96,20 @@ namespace Lost
         {
             if (rom == null) return;
 
-            Console.WriteLine("Loading...\n> names");
+            // get limits from .ini
+            pokemonCount = romInfo.GetInt32(rom.Code, "NumberOfPokemon");
+            evolutionCount = romInfo.GetInt32(rom.Code, "NumberOfEvolutions");
+
+            typeCount = 17; // default value, changed during loading
+            abilityCount = romInfo.GetInt32(rom.Code, "NumberOfAbilities");
+            itemCount = romInfo.GetInt32(rom.Code, "NumberOfItems");
+
+            // load all data needed
             LoadNames();
-
-            Console.WriteLine("> base stats");
             LoadPokemon();
-
-            Console.WriteLine("> evolutions");
             LoadEvolutions();
-
-            Console.WriteLine("> types");
             LoadTypes();
-
-            Console.WriteLine("> abilities");
             LoadAbilities();
-
-            Console.WriteLine("> items");
             LoadItems();
         }
 
@@ -92,7 +118,6 @@ namespace Lost
         void LoadPokemon()
         {
             // get needed info from ini
-            var pokemonCount = romInfo.GetInt32(rom.Code, "NumberOfPokemon");
             var firstPokemon = romInfo.GetInt32(rom.Code, "BaseStatsData", 16);
 
             // seek firstPokemon and begin
@@ -131,13 +156,12 @@ namespace Lost
         void LoadEvolutions()
         {
             var pokemonCount = romInfo.GetInt32(rom.Code, "NumberOfPokemon");
-            var evolutionCount = romInfo.GetInt32(rom.Code, "NumberOfEvolutions");
             var firstEvolution = romInfo.GetInt32(rom.Code, "EvolutionData", 16);
 
             rom.Seek(firstEvolution);
 
             evolutions = new Evolution[pokemonCount, evolutionCount];
-            for (int i = 0; i < evolutionCount; i++)
+            for (int i = 0; i < pokemonCount; i++)
             {
                 for (int j = 0; j < evolutionCount; j++)
                 {
@@ -166,7 +190,7 @@ namespace Lost
             var typeChart = romInfo.GetInt32(rom.Code, "TypeChart", 16);
 
             // first, load the type chart to find the number of types
-            var typeCount = 0;
+            var lastType = 0;
 
             rom.Seek(typeChart);
             while (rom.PeekByte() != 0xFF)
@@ -175,10 +199,10 @@ namespace Lost
                 var defender = rom.ReadByte();
                 var effectiveness = rom.ReadByte();
 
-                if (typeCount < attacker)
-                    typeCount = attacker;
-                if (typeCount < defender)
-                    typeCount = defender;
+                if (lastType < attacker)
+                    lastType = attacker;
+                if (lastType < defender)
+                    lastType = defender;
 
                 if (rom.PeekByte() == 0xFE)
                 {
@@ -193,13 +217,14 @@ namespace Lost
                 var defender = rom.ReadByte();
                 var effectiveness = rom.ReadByte();
 
-                if (typeCount < attacker)
-                    typeCount = attacker;
-                if (typeCount < defender)
-                    typeCount = defender;
+                if (lastType < attacker)
+                    lastType = attacker;
+                if (lastType < defender)
+                    lastType = defender;
             }
-
-            Console.WriteLine("number of types: {0}", typeCount);
+            
+            // get typeCount
+            typeCount = lastType + 1;
 
             // load type names now
             rom.Seek(nameTable);
@@ -208,7 +233,6 @@ namespace Lost
 
         void LoadAbilities()
         {
-            var abilityCount = romInfo.GetInt32(rom.Code, "NumberOfAbilities");
             var firstAbility = romInfo.GetInt32(rom.Code, "AbilityNames", 16);
 
             rom.Seek(firstAbility);
@@ -217,7 +241,6 @@ namespace Lost
 
         void LoadItems()
         {
-            var itemCount = romInfo.GetInt32(rom.Code, "NumberOfItems");
             var firstItem = romInfo.GetInt32(rom.Code, "ItemData", 16);
 
             items = new string[itemCount];
@@ -236,53 +259,46 @@ namespace Lost
         {
             if (rom == null) return;
 
-            Console.WriteLine("Saving...\n> names");
+            // save everything
             SaveNames();
-
-            Console.WriteLine("> base stats");
             SavePokemon();
-
-            Console.WriteLine("> evolutions");
             SaveEvolutions();
 
-            Console.WriteLine("Writing to file.");
+            // write ROM buffer to disk
             rom.Save();
         }
 
-        unsafe void SavePokemon()
+        void SavePokemon()
         {
             var firstPokemon = romInfo.GetInt32(rom.Code, "BaseStatsData", 16);
 
             rom.Seek(firstPokemon);
-            for (int i = 0; i < pokemon.Length; i++)
+            for (int i = 0; i < pokemonCount; i++)
             {
-                fixed (Pokemon* pk = &pokemon[i])
-                {
-                    rom.WriteByte(pk->HP);
-                    rom.WriteByte(pk->Attack);
-                    rom.WriteByte(pk->Defense);
-                    rom.WriteByte(pk->Speed);
-                    rom.WriteByte(pk->SpecialAttack);
-                    rom.WriteByte(pk->SpecialDefense);
-                    rom.WriteByte(pk->Type);
-                    rom.WriteByte(pk->Type2);
-                    rom.WriteByte(pk->CatchRate);
-                    rom.WriteByte(pk->BaseExperience);
-                    rom.WriteUInt16(pk->EffortYield);
-                    rom.WriteUInt16(pk->HeldItem);
-                    rom.WriteUInt16(pk->HeldItem2);
-                    rom.WriteByte(pk->GenderRatio);
-                    rom.WriteByte(pk->EggCycles);
-                    rom.WriteByte(pk->BaseFriendship);
-                    rom.WriteByte(pk->LevelRate);
-                    rom.WriteByte(pk->EggGroup);
-                    rom.WriteByte(pk->EggGroup2);
-                    rom.WriteByte(pk->Ability);
-                    rom.WriteByte(pk->Ability2);
-                    rom.WriteByte(pk->RunRate);
-                    rom.WriteByte(pk->ColorFlip);
-                    rom.WriteUInt16(pk->Padding);
-                }
+                rom.WriteByte(pokemon[i].HP);
+                rom.WriteByte(pokemon[i].Attack);
+                rom.WriteByte(pokemon[i].Defense);
+                rom.WriteByte(pokemon[i].Speed);
+                rom.WriteByte(pokemon[i].SpecialAttack);
+                rom.WriteByte(pokemon[i].SpecialDefense);
+                rom.WriteByte(pokemon[i].Type);
+                rom.WriteByte(pokemon[i].Type2);
+                rom.WriteByte(pokemon[i].CatchRate);
+                rom.WriteByte(pokemon[i].BaseExperience);
+                rom.WriteUInt16(pokemon[i].EffortYield);
+                rom.WriteUInt16(pokemon[i].HeldItem);
+                rom.WriteUInt16(pokemon[i].HeldItem2);
+                rom.WriteByte(pokemon[i].GenderRatio);
+                rom.WriteByte(pokemon[i].EggCycles);
+                rom.WriteByte(pokemon[i].BaseFriendship);
+                rom.WriteByte(pokemon[i].LevelRate);
+                rom.WriteByte(pokemon[i].EggGroup);
+                rom.WriteByte(pokemon[i].EggGroup2);
+                rom.WriteByte(pokemon[i].Ability);
+                rom.WriteByte(pokemon[i].Ability2);
+                rom.WriteByte(pokemon[i].RunRate);
+                rom.WriteByte(pokemon[i].ColorFlip);
+                rom.WriteUInt16(pokemon[i].Padding);
             }
         }
 
@@ -294,10 +310,8 @@ namespace Lost
             rom.WriteTextTable(names, 11, CharacterEncoding.English);
         }
 
-        unsafe void SaveEvolutions()
+        void SaveEvolutions()
         {
-            var pokemonCount = romInfo.GetInt32(rom.Code, "NumberOfPokemon");
-            var evolutionCount = romInfo.GetInt32(rom.Code, "NumberOfEvolutions");
             var firstEvolution = romInfo.GetInt32(rom.Code, "EvolutionData", 16);
 
             rom.Seek(firstEvolution);
@@ -305,17 +319,168 @@ namespace Lost
             {
                 for (int j = 0; j < evolutionCount; j++)
                 {
-                    fixed (Evolution* e = &evolutions[i, j])
-                    {
-                        rom.WriteUInt16(e->Method);
-                        rom.WriteUInt16(e->Parameter);
-                        rom.WriteUInt16(e->Target);
-                        rom.WriteUInt16(e->Padding);
-                    }
+                    rom.WriteUInt16(evolutions[i, j].Method);
+                    rom.WriteUInt16(evolutions[i, j].Parameter);
+                    rom.WriteUInt16(evolutions[i, j].Target);
+                    rom.WriteUInt16(evolutions[i, j].Padding);
                 }
             }
         }
 
         #endregion
+
+        void FixPokemon()
+        {
+            // the aim of this function is to search all Pokemon data
+            // and ensure they have valid data
+            // TODO
+        }
+
+        void DisplayPokemon(int index)
+        {
+            ignore = true;
+
+            // Base stats
+            tBaseHealth.Value = pokemon[index].HP;
+            tBaseAttack.Value = pokemon[index].Attack;
+            tBaseDefense.Value = pokemon[index].Defense;
+            tBaseSpecialAttack.Value = pokemon[index].SpecialAttack;
+            tBaseSpecialDefense.Value = pokemon[index].SpecialDefense;
+            tBaseSpeed.Value = pokemon[index].Speed;
+
+            tBaseHealth2.Value = pokemon[index].EffortYield & 3;
+            tBaseAttack2.Value = pokemon[index].EffortYield >> 2 & 3;
+            tBaseDefense2.Value = pokemon[index].EffortYield >> 4 & 3;
+            tBaseSpecialAttack2.Value = pokemon[index].EffortYield >> 6 & 3;
+            tBaseSpecialDefense2.Value = pokemon[index].EffortYield >> 8 & 3;
+            tBaseSpeed2.Value = pokemon[index].EffortYield >> 10 & 3;
+
+            cBaseType.SelectedIndex = pokemon[index].Type;
+            cBaseType2.SelectedIndex = pokemon[index].Type2;
+
+            cBaseAbility.SelectedIndex = pokemon[index].Ability;
+            cBaseAbility2.SelectedIndex = pokemon[index].Ability2;
+
+            cBaseItem.SelectedIndex = pokemon[index].HeldItem;
+            cBaseItem2.SelectedIndex = pokemon[index].HeldItem2;
+
+            cBaseEggGroup.SelectedIndex = pokemon[index].EggGroup;
+            cBaseEggGroup2.SelectedIndex = pokemon[index].EggGroup2;
+            tBaseHatchTime.Value = pokemon[index].EggCycles;
+
+            // Evolutions
+            listEvolutions.Items.Clear();
+            for (int i = 0; i < evolutionCount; i++)
+            {
+                listEvolutions.Items.Add(DisplayEvolutionItem(ref evolutions[index, i], i));
+            }
+
+            ignore = false;
+        }
+
+        void DisplayBlankPokemon()
+        {
+            ignore = true;
+
+            // Base stats
+
+            tBaseHealth.Value = 0;
+            tBaseAttack.Value = 0;
+            tBaseDefense.Value = 0;
+            tBaseSpecialAttack.Value = 0;
+            tBaseSpecialDefense.Value = 0;
+            tBaseSpeed.Value = 0;
+            tBaseHealth2.Value = 0;
+            tBaseAttack2.Value = 0;
+            tBaseDefense2.Value = 0;
+            tBaseSpecialAttack2.Value = 0;
+            tBaseSpecialDefense2.Value = 0;
+            tBaseSpeed2.Value = 0;
+            cBaseType.SelectedIndex = 0;
+            cBaseType2.SelectedIndex = 0;
+            cBaseAbility.SelectedIndex = 0;
+            cBaseAbility2.SelectedIndex = 0;
+            cBaseItem.SelectedIndex = 0;
+            cBaseItem2.SelectedIndex = 0;
+            cBaseEggGroup.SelectedIndex = 0;
+            cBaseEggGroup2.SelectedIndex = 0;
+            tBaseHatchTime.Value = 0;
+
+            // Evolutions
+            listEvolutions.Items.Clear();
+            for (int i = 0; i < evolutionCount; i++)
+            {
+                var item = new ListViewItem();
+                item.Tag = i;
+
+                item.Text = evolutionTypes[0];
+                item.SubItems.Add("00");
+                item.SubItems.Add(names[0]);
+                item.SubItems.Add($"{0:X2} {0:X2}");
+
+                listEvolutions.Items.Add(item);
+            }
+
+            ignore = false;
+        }
+
+        ListViewItem DisplayEvolutionItem(ref Evolution e, int index)
+        {
+            // returns a ListViewItem representing this evolution
+            // index is provided for ease of editing
+
+            var item = new ListViewItem();
+            item.Tag = index;
+
+            // set method name or value
+            if (e.Method < evolutionTypes.Length)
+                item.Text = evolutionTypes[e.Method];
+            else
+                item.Text = e.Method.ToString("X2");
+
+            // set parameter text or value
+            if (evolutionParameters.ContainsKey(e.Method))
+            {
+                switch (evolutionParameters[e.Method])
+                {
+                    // level and item are in the only parameters needed by the base game
+                    case "level":
+                        item.SubItems.Add(e.Parameter.ToString());
+                        break;
+                    case "item":
+                        item.SubItems.Add(items[e.Parameter]);
+                        break;
+
+                    // other parameters supported for extensibility
+                    case "pokemon":
+                        item.SubItems.Add(names[e.Parameter]);
+                        break;
+                    case "ability":
+                        item.SubItems.Add(abilities[e.Parameter]);
+                        break;
+                    case "type":
+                        item.SubItems.Add(types[e.Parameter]);
+                        break;
+                    //case "weather":
+                        // TODO
+
+                    default:
+                        item.SubItems.Add($"{e.Parameter >> 8 & 0xFF:X2} {e.Parameter & 0xFF:X2}");
+                        break;
+                }
+            }
+            else
+            {
+                item.SubItems.Add($"{e.Parameter >> 8 & 0xFF:X2} {e.Parameter & 0xFF:X2}");
+            }
+
+            // set target
+            item.SubItems.Add(names[e.Target]);
+
+            // set padding as bytes
+            item.SubItems.Add($"{e.Padding >> 8 & 0xFF:X2} {e.Padding & 0xFF:X2}");
+
+            return item;
+        }
     }
 }
