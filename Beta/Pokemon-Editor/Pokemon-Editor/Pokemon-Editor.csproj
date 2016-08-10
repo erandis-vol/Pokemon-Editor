@@ -47,6 +47,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="GBA\Evolution.cs" />
     <Compile Include="GBA\Pokemon.cs" />
     <Compile Include="GBA\ROM.cs" />
     <Compile Include="GBA\TextTable.cs" />
@@ -58,6 +59,10 @@
     </Compile>
     <Compile Include="MainForm.Pokemon.cs">
       <DependentUpon>MainForm.cs</DependentUpon>
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="NumberBox.cs">
+      <SubType>Component</SubType>
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

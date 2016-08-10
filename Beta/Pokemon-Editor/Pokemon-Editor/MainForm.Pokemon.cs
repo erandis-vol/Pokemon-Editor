@@ -18,6 +18,7 @@ namespace Lost
 
         Pokemon[] pokemon;
         string[] names;
+        Evolution[,] evolutions;
 
         public bool OpenROM(string filename)
         {
@@ -118,6 +119,27 @@ namespace Lost
             names = rom.ReadTextTable(11, pokemonCount, CharacterEncoding.English);
         }
 
+        void LoadEvolutions()
+        {
+            var pokemonCount = romInfo.GetInt32(rom.Code, "NumberOfPokemon");
+            var evolutionCount = romInfo.GetInt32(rom.Code, "NumberOfEvolutions");
+            var firstEvolution = romInfo.GetInt32(rom.Code, "EvolutionData", 16);
+
+            rom.Seek(firstEvolution);
+
+            evolutions = new Evolution[pokemonCount, evolutionCount];
+            for (int i = 0; i < evolutionCount; i++)
+            {
+                for (int j = 0; j < evolutionCount; j++)
+                {
+                    evolutions[i, j].Method = rom.ReadUInt16();
+                    evolutions[i, j].Parameter = rom.ReadUInt16();
+                    evolutions[i, j].Target = rom.ReadUInt16();
+                    evolutions[i, j].Padding = rom.ReadUInt16();
+                }
+            }
+        }
+
         #endregion
 
         #region Saving
@@ -179,6 +201,28 @@ namespace Lost
 
             rom.Seek(nameTable);
             rom.WriteTextTable(names, 11, CharacterEncoding.English);
+        }
+
+        unsafe void SaveEvolutions()
+        {
+            var pokemonCount = romInfo.GetInt32(rom.Code, "NumberOfPokemon");
+            var evolutionCount = romInfo.GetInt32(rom.Code, "NumberOfEvolutions");
+            var firstEvolution = romInfo.GetInt32(rom.Code, "EvolutionData", 16);
+
+            rom.Seek(firstEvolution);
+            for (int i = 0; i < pokemonCount; i++)
+            {
+                for (int j = 0; j < evolutionCount; j++)
+                {
+                    fixed (Evolution* e = &evolutions[i, j])
+                    {
+                        rom.WriteUInt16(e->Method);
+                        rom.WriteUInt16(e->Parameter);
+                        rom.WriteUInt16(e->Target);
+                        rom.WriteUInt16(e->Padding);
+                    }
+                }
+            }
         }
 
         #endregion
