@@ -23,6 +23,8 @@ namespace Lost
 
         // data that is not saved
         string[] types;
+        string[] abilities;
+        string[] items;
 
         public bool OpenROM(string filename)
         {
@@ -77,9 +79,16 @@ namespace Lost
 
             Console.WriteLine("> types");
             LoadTypes();
+
+            Console.WriteLine("> abilities");
+            LoadAbilities();
+
+            Console.WriteLine("> items");
+            LoadItems();
         }
 
-        // loads all Pokemon
+        // data that will be saved:
+
         void LoadPokemon()
         {
             // get needed info from ini
@@ -119,16 +128,6 @@ namespace Lost
             }
         }
 
-        // loads all Pokemon names
-        void LoadNames()
-        {
-            var pokemonCount = romInfo.GetInt32(rom.Code, "NumberOfPokemon");
-            var nameTable = romInfo.GetInt32(rom.Code, "PokemonNames", 16);
-
-            rom.Seek(nameTable);
-            names = rom.ReadTextTable(11, pokemonCount, CharacterEncoding.English);
-        }
-
         void LoadEvolutions()
         {
             var pokemonCount = romInfo.GetInt32(rom.Code, "NumberOfPokemon");
@@ -149,6 +148,17 @@ namespace Lost
                 }
             }
         }
+
+        void LoadNames()
+        {
+            var pokemonCount = romInfo.GetInt32(rom.Code, "NumberOfPokemon");
+            var nameTable = romInfo.GetInt32(rom.Code, "PokemonNames", 16);
+
+            rom.Seek(nameTable);
+            names = rom.ReadTextTable(11, pokemonCount, CharacterEncoding.English);
+        }
+
+        // data that will not be saved:
 
         void LoadTypes()
         {
@@ -194,6 +204,28 @@ namespace Lost
             // load type names now
             rom.Seek(nameTable);
             types = rom.ReadTextTable(7, typeCount, CharacterEncoding.English);
+        }
+
+        void LoadAbilities()
+        {
+            var abilityCount = romInfo.GetInt32(rom.Code, "NumberOfAbilities");
+            var firstAbility = romInfo.GetInt32(rom.Code, "AbilityNames", 16);
+
+            rom.Seek(firstAbility);
+            abilities = rom.ReadTextTable(13, abilityCount, CharacterEncoding.English);
+        }
+
+        void LoadItems()
+        {
+            var itemCount = romInfo.GetInt32(rom.Code, "NumberOfItems");
+            var firstItem = romInfo.GetInt32(rom.Code, "ItemData", 16);
+
+            items = new string[itemCount];
+            for (int i = 0; i < itemCount; i++)
+            {
+                rom.Seek(firstItem + i * 44);
+                items[i] = rom.ReadText(14, CharacterEncoding.English);
+            }
         }
 
         #endregion
