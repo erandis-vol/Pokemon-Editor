@@ -162,7 +162,7 @@ namespace Lost.GBA
         }
 
         // read a GBA string
-        /*public string ReadText(int length, CharacterEncoding encoding = CharacterEncoding.English)
+        public string ReadText(int length, CharacterEncoding encoding = CharacterEncoding.English)
         {
             return TextTable.GetString(ReadBytes(length), encoding);
         }
@@ -174,7 +174,7 @@ namespace Lost.GBA
                 table[i] = ReadText(stringLength, encoding);
 
             return table;
-        }*/
+        }
 
         public byte[] ReadCompressedBytes()
         {
@@ -357,10 +357,34 @@ namespace Lost.GBA
             WriteInt32(offset | 0x8000000);
         }
 
-        // Write a UTF8 encoded string
         public void WriteString(string str)
         {
+            // utf8 encoded string
             WriteBytes(Encoding.UTF8.GetBytes(str));
+        }
+
+        public void WriteText(string str, CharacterEncoding encoding)
+        {
+            WriteBytes(TextTable.GetBytes(str, encoding));
+        }
+
+        public void WriteText(string str, int length, CharacterEncoding encoding)
+        {
+            // convert string
+            var buffer = TextTable.GetBytes(str, encoding);
+
+            // ensure proper length
+            if (buffer.Length != length)
+                Array.Resize(ref buffer, length);
+            buffer[length - 1] = 0xFF;
+
+            WriteBytes(buffer);
+        }
+
+        public void WriteTextTable(string[] table, int entryLength, CharacterEncoding encoding)
+        {
+            foreach (var str in table)
+                WriteText(str, entryLength, encoding);
         }
 
         #endregion
