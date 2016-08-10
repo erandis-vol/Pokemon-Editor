@@ -55,6 +55,12 @@ namespace Lost
             // display stuff
             listBox1.Items.Clear();
             listBox1.Items.AddRange(names);
+
+            cBaseType.Items.Clear();
+            cBaseType.Items.AddRange(types);
+
+            cBaseType2.Items.Clear();
+            cBaseType2.Items.AddRange(types);
         }
 
         private void saveToolStripMenuItem_Click(object sender, EventArgs e)
@@ -64,7 +70,23 @@ namespace Lost
 
         private void listBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
+            if (rom == null) return;
 
+            var pokemonIndex = listBox1.SelectedIndex;
+
+            tBaseHealth.Value = pokemon[pokemonIndex].HP;
+            tBaseAttack.Value = pokemon[pokemonIndex].Attack;
+            tBaseDefense.Value = pokemon[pokemonIndex].Defense;
+            tBaseSpecialAttack.Value = pokemon[pokemonIndex].SpecialAttack;
+            tBaseSpecialDefense.Value = pokemon[pokemonIndex].SpecialDefense;
+            tBaseSpeed.Value = pokemon[pokemonIndex].Speed;
+
+            tBaseHealth2.Value = pokemon[pokemonIndex].EffortYield & 3;
+            tBaseAttack2.Value = pokemon[pokemonIndex].EffortYield >> 2 & 3;
+            tBaseDefense2.Value = pokemon[pokemonIndex].EffortYield >> 4 & 3;
+            tBaseSpecialAttack2.Value = pokemon[pokemonIndex].EffortYield >> 6 & 3;
+            tBaseSpecialDefense2.Value = pokemon[pokemonIndex].EffortYield >> 8 & 3;
+            tBaseSpeed2.Value = pokemon[pokemonIndex].EffortYield >> 10 & 3;
         }
     }
 }

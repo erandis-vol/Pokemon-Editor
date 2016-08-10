@@ -7,6 +7,8 @@ using System.Windows.Forms;
 
 namespace Lost
 {
+    // TODO: these don't allow Ctrl-A and other such things
+
     public class NumberBox : TextBox
     {
         /// <summary>
@@ -32,6 +34,9 @@ namespace Lost
             }
         }
 
+        public int MinimumValue { get; set; } = 0;
+        public int MaximumValue { get; set; } = 100;
+
         protected override void OnKeyPress(KeyPressEventArgs e)
         {
             // very simple, limit keys to back and numbers
@@ -41,6 +46,16 @@ namespace Lost
                 e.Handled = true;
 
             base.OnKeyPress(e);
+        }
+
+        protected override void OnTextChanged(EventArgs e)
+        {
+            base.OnTextChanged(e);
+
+            if (Value < MinimumValue)
+                Value = MinimumValue;
+            if (Value > MaximumValue)
+                Value = MaximumValue;
         }
     }
 
@@ -65,9 +80,12 @@ namespace Lost
             }
             set
             {
-                Text = value.ToString();
+                Text = "0x" + value.ToString("X");
             }
         }
+
+        public int MinimumValue { get; set; } = 0;
+        public int MaximumValue { get; set; } = 100;
 
         protected override void OnKeyPress(KeyPressEventArgs e)
         {
@@ -77,11 +95,21 @@ namespace Lost
                 e.KeyChar == '\b')
                 e.Handled = false;
             else if (e.KeyChar == 'x')
-                e.Handled = Text == "0";
+                e.Handled = Text != "0";
             else
                 e.Handled = true;
 
             base.OnKeyPress(e);
+        }
+
+        protected override void OnTextChanged(EventArgs e)
+        {
+            base.OnTextChanged(e);
+
+            if (Value < MinimumValue)
+                Value = MinimumValue;
+            if (Value > MaximumValue)
+                Value = MaximumValue;
         }
     }
 }

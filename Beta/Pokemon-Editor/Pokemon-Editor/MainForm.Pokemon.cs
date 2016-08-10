@@ -16,9 +16,13 @@ namespace Lost
         ROM rom;
         Settings romInfo;
 
+        // data that is saved
         Pokemon[] pokemon;
         string[] names;
         Evolution[,] evolutions;
+
+        // data that is not saved
+        string[] types;
 
         public bool OpenROM(string filename)
         {
@@ -67,6 +71,12 @@ namespace Lost
 
             Console.WriteLine("> base stats");
             LoadPokemon();
+
+            Console.WriteLine("> evolutions");
+            LoadEvolutions();
+
+            Console.WriteLine("> types");
+            LoadTypes();
         }
 
         // loads all Pokemon
@@ -140,6 +150,52 @@ namespace Lost
             }
         }
 
+        void LoadTypes()
+        {
+            var nameTable = romInfo.GetInt32(rom.Code, "TypeNames", 16);
+            var typeChart = romInfo.GetInt32(rom.Code, "TypeChart", 16);
+
+            // first, load the type chart to find the number of types
+            var typeCount = 0;
+
+            rom.Seek(typeChart);
+            while (rom.PeekByte() != 0xFF)
+            {
+                var attacker = rom.ReadByte();
+                var defender = rom.ReadByte();
+                var effectiveness = rom.ReadByte();
+
+                if (typeCount < attacker)
+                    typeCount = attacker;
+                if (typeCount < defender)
+                    typeCount = defender;
+
+                if (rom.PeekByte() == 0xFE)
+                {
+                    rom.Skip(3);
+                    break;
+                }
+            }
+
+            while (rom.PeekByte() != 0xFF)
+            {
+                var attacker = rom.ReadByte();
+                var defender = rom.ReadByte();
+                var effectiveness = rom.ReadByte();
+
+                if (typeCount < attacker)
+                    typeCount = attacker;
+                if (typeCount < defender)
+                    typeCount = defender;
+            }
+
+            Console.WriteLine("number of types: {0}", typeCount);
+
+            // load type names now
+            rom.Seek(nameTable);
+            types = rom.ReadTextTable(7, typeCount, CharacterEncoding.English);
+        }
+
         #endregion
 
         #region Saving
@@ -153,6 +209,9 @@ namespace Lost
 
             Console.WriteLine("> base stats");
             SavePokemon();
+
+            Console.WriteLine("> evolutions");
+            SaveEvolutions();
 
             Console.WriteLine("Writing to file.");
             rom.Save();
