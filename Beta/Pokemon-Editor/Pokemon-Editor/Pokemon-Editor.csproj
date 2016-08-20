@@ -48,6 +48,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="GBA\Evolution.cs" />
+    <Compile Include="GBA\Moveset.cs" />
     <Compile Include="GBA\Pokedex.cs" />
     <Compile Include="GBA\Pokemon.cs" />
     <Compile Include="GBA\ROM.cs" />
@@ -94,6 +95,9 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
     <None Include="ROMs.ini" />
+    <None Include="ROMs\AXPE.ini">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

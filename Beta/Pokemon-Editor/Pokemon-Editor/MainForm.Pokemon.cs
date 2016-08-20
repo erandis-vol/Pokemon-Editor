@@ -37,7 +37,6 @@ namespace Lost
         int abilityCount;
         int itemCount;
 
-        //string[] evolutionTypes = "-------,Friendship,Friendship (Day),Friendship (Night),Level,Trade,Trade (w/ Item),Stone,ATK > DEF,ATK = DEF,ATK < DEF,High Personality,Low Personality,Spawn a Second,Create Spawn,Beauty".Split(',');
         Dictionary<int, string> evolutionTypes = new Dictionary<int, string>();
         Dictionary<int, string> evolutionParameters = new Dictionary<int, string>();
 
@@ -115,6 +114,7 @@ namespace Lost
             LoadEvolutions();
             LoadPokedexOrder();
             LoadPokedex();
+            LoadMovesets();
 
             LoadTypes();
             LoadAbilities();
@@ -214,7 +214,7 @@ namespace Lost
             pokedex = new PokedexEntry[entryCount];
             switch (romInfo.GetString("pokedex", "Format"))
             {
-                case "RS": // 2 pages, 36 bytes
+                case "ruby": // 2 pages, 36 bytes
                     for (int i = 0; i < entryCount; i++)
                     {
                         rom.Seek(firstEntry + i * 36);
@@ -247,7 +247,7 @@ namespace Lost
                     }
                     break;
 
-                case "FRLG": // 1 page, 36 bytes
+                case "firered": // 1 page, 36 bytes
                     for (int i = 0; i < entryCount; i++)
                     {
                         rom.Seek(firstEntry + i * 36);
@@ -278,7 +278,7 @@ namespace Lost
                     }
                     break;
 
-                case "E": // 1 page, 32 bytes
+                case "emerald": // 1 page, 32 bytes
                     for (int i = 0; i < entryCount; i++)
                     {
                         rom.Seek(firstEntry + i * 32);
@@ -307,6 +307,38 @@ namespace Lost
             }
         }
 
+        void LoadMovesets()
+        {
+            rom.Seek(romInfo.GetInt32("movesets", "Data", 16));
+
+            // What is the best way to store this?
+            // Movesets are stored in a table of pointers
+            // Meaning a Pokémon could share a moveset with another
+            // Dictionary?
+
+            switch (romInfo.GetString("movesets", "Format"))
+            {
+                case "extended":
+                    // three bytes per entry
+                    // 16 bits per attack, 8 per level
+                    // FFFF terminated
+                    // (max attack index is 65534, max level is 255)
+                    break;
+
+                case "vanilla":
+                default:
+                    // two bytes per entry
+                    // 9 bits per attack, 7 per level
+                    // FFFF terminated
+                    // (max attack index is 511, max level is 127)
+                    for (int i = 0; i < pokemonCount; i++)
+                    {
+
+                    }
+                    break;
+            }
+        }
+
         // data that will not be saved:
 
         void LoadTypes()
@@ -319,36 +351,53 @@ namespace Lost
 
             rom.Seek(typeChart);
 
-            // normal type data
-            while (rom.PeekByte() != 0xFF)
+            switch (romInfo.GetString("types", "Format"))
             {
-                var attacker = rom.ReadByte();
-                var defender = rom.ReadByte();
-                var effectiveness = rom.ReadByte();
+                case "full-chart":
+                    // format where for every type, data is stored
+                    // (used by the EM battle engine upgrade)
+                    // the idea is to analyze the data by reading until a value of
+                    // 00, 05, 10, or 20 is not found again
+                    throw new NotImplementedException("This type chart format \"full-chart\" is not implemented yet!");
 
-                if (lastType < attacker)
-                    lastType = attacker;
-                if (lastType < defender)
-                    lastType = defender;
+                case "vanilla":
+                    // type chart as stored in a vanilla game
+                    // 3 bytes per entry, [attacker] [defender] [effectiveness]
+                    // terminated by ff fe 00
+                    // second chart follows for foresight, terminated by ff ff 00
+                default:
+                    // normal type data
+                    while (rom.PeekByte() != 0xFF)
+                    {
+                        var attacker = rom.ReadByte();
+                        var defender = rom.ReadByte();
+                        var effectiveness = rom.ReadByte();
 
-                if (rom.PeekByte() == 0xFE)
-                {
-                    rom.Skip(3);
+                        if (lastType < attacker)
+                            lastType = attacker;
+                        if (lastType < defender)
+                            lastType = defender;
+
+                        if (rom.PeekByte() == 0xFE)
+                        {
+                            rom.Skip(3);
+                            break;
+                        }
+                    }
+
+                    // foresight type data
+                    while (rom.PeekByte() != 0xFF)
+                    {
+                        var attacker = rom.ReadByte();
+                        var defender = rom.ReadByte();
+                        var effectiveness = rom.ReadByte();
+
+                        if (lastType < attacker)
+                            lastType = attacker;
+                        if (lastType < defender)
+                            lastType = defender;
+                    }
                     break;
-                }
-            }
-
-            // foresight type data
-            while (rom.PeekByte() != 0xFF)
-            {
-                var attacker = rom.ReadByte();
-                var defender = rom.ReadByte();
-                var effectiveness = rom.ReadByte();
-
-                if (lastType < attacker)
-                    lastType = attacker;
-                if (lastType < defender)
-                    lastType = defender;
             }
             
             // get typeCount

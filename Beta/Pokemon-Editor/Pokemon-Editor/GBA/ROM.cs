@@ -113,6 +113,11 @@ namespace Lost.GBA
             return (ushort)(buffer[pos++] | (buffer[pos++] << 8));
         }
 
+        public ushort PeekUInt16()
+        {
+            return (ushort)(buffer[pos] | (buffer[pos + 1] << 8));
+        }
+
         public int ReadInt32()
         {
             return buffer[pos++] | (buffer[pos++] << 8) | (buffer[pos++] << 16) | (buffer[pos++] << 24);
