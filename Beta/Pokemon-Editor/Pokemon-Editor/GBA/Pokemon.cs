@@ -2,27 +2,25 @@
 {
     public struct Pokemon
     {
-        public byte HP; // x
-        public byte Attack; // x
-        public byte Defense; // x
-        public byte Speed; // x
-        public byte SpecialAttack; // x
-        public byte SpecialDefense; // x
-        public byte Type; // x
-        public byte Type2; // x
+        public byte HP;
+        public byte Attack;
+        public byte Defense;
+        public byte Speed;
+        public byte SpecialAttack;
+        public byte SpecialDefense;
+        public byte Type, Type2;
         public byte CatchRate;
-        public byte BaseExperience; // x
-        public ushort EffortYield; // x
-        public ushort HeldItem; // x
-        public ushort HeldItem2; // x
+        public byte BaseExperience;
+        public ushort EffortYield;
+        public ushort HeldItem, HeldItem2;
         public byte GenderRatio;
-        public byte EggCycles; // x
+        public byte EggCycles;
         public byte BaseFriendship;
-        public byte LevelRate; // x
-        public byte EggGroup, EggGroup2; // x
-        public byte Ability, Ability2; // x
+        public byte LevelRate;
+        public byte EggGroup, EggGroup2;
+        public byte Ability, Ability2;
         public byte RunRate;
-        public byte ColorFlip;
+        public byte ColorFlip; // color on dex page
         public ushort Padding;
     }
 }

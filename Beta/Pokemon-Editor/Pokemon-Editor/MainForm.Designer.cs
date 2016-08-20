@@ -37,16 +37,24 @@
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             this.listBox1 = new System.Windows.Forms.ListBox();
             this.tabControl1 = new System.Windows.Forms.TabControl();
-            this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.tabBaseStats = new System.Windows.Forms.TabPage();
+            this.label20 = new System.Windows.Forms.Label();
+            this.tBasePadding = new Lost.HexBox();
+            this.chkBaseFlipSprite = new System.Windows.Forms.CheckBox();
+            this.groupBox8 = new System.Windows.Forms.GroupBox();
+            this.tBaseRunRate = new Lost.NumberBox();
+            this.label18 = new System.Windows.Forms.Label();
+            this.label19 = new System.Windows.Forms.Label();
+            this.tBaseCatchRate = new Lost.NumberBox();
             this.groupBox7 = new System.Windows.Forms.GroupBox();
             this.label16 = new System.Windows.Forms.Label();
             this.tBaseExperienceYield = new Lost.NumberBox();
             this.label15 = new System.Windows.Forms.Label();
             this.cBaseLevelRate = new System.Windows.Forms.ComboBox();
             this.groupBox6 = new System.Windows.Forms.GroupBox();
+            this.tBaseGenderRatio = new Lost.NumberBox();
             this.lBaseGender = new System.Windows.Forms.Label();
             this.label17 = new System.Windows.Forms.Label();
-            this.trkBaseGender = new System.Windows.Forms.TrackBar();
             this.label14 = new System.Windows.Forms.Label();
             this.tBaseHatchTime = new Lost.NumberBox();
             this.label13 = new System.Windows.Forms.Label();
@@ -87,24 +95,26 @@
             this.label2 = new System.Windows.Forms.Label();
             this.tBaseHealth = new Lost.NumberBox();
             this.label1 = new System.Windows.Forms.Label();
-            this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.tabEvolutions = new System.Windows.Forms.TabPage();
             this.listEvolutions = new System.Windows.Forms.ListView();
             this.colEvolutionType = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.colEvolutionParameter = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.colEvolutionTarget = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.colEvolutionPadding = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.tBaseFriendship = new Lost.NumberBox();
+            this.label21 = new System.Windows.Forms.Label();
             this.menuStrip1.SuspendLayout();
             this.tabControl1.SuspendLayout();
-            this.tabPage1.SuspendLayout();
+            this.tabBaseStats.SuspendLayout();
+            this.groupBox8.SuspendLayout();
             this.groupBox7.SuspendLayout();
             this.groupBox6.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.trkBaseGender)).BeginInit();
             this.groupBox5.SuspendLayout();
             this.groupBox4.SuspendLayout();
             this.groupBox3.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox1.SuspendLayout();
-            this.tabPage2.SuspendLayout();
+            this.tabEvolutions.SuspendLayout();
             this.SuspendLayout();
             // 
             // menuStrip1
@@ -176,30 +186,121 @@
             this.tabControl1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.tabControl1.Controls.Add(this.tabPage1);
-            this.tabControl1.Controls.Add(this.tabPage2);
+            this.tabControl1.Controls.Add(this.tabBaseStats);
+            this.tabControl1.Controls.Add(this.tabEvolutions);
             this.tabControl1.Location = new System.Drawing.Point(282, 31);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(490, 599);
+            this.tabControl1.Size = new System.Drawing.Size(490, 521);
             this.tabControl1.TabIndex = 2;
             // 
-            // tabPage1
+            // tabBaseStats
             // 
-            this.tabPage1.Controls.Add(this.groupBox7);
-            this.tabPage1.Controls.Add(this.groupBox6);
-            this.tabPage1.Controls.Add(this.groupBox5);
-            this.tabPage1.Controls.Add(this.groupBox4);
-            this.tabPage1.Controls.Add(this.groupBox3);
-            this.tabPage1.Controls.Add(this.groupBox2);
-            this.tabPage1.Controls.Add(this.groupBox1);
-            this.tabPage1.Location = new System.Drawing.Point(4, 25);
-            this.tabPage1.Name = "tabPage1";
-            this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(482, 570);
-            this.tabPage1.TabIndex = 0;
-            this.tabPage1.Text = "Base Stats.";
-            this.tabPage1.UseVisualStyleBackColor = true;
+            this.tabBaseStats.Controls.Add(this.label20);
+            this.tabBaseStats.Controls.Add(this.tBasePadding);
+            this.tabBaseStats.Controls.Add(this.chkBaseFlipSprite);
+            this.tabBaseStats.Controls.Add(this.groupBox8);
+            this.tabBaseStats.Controls.Add(this.groupBox7);
+            this.tabBaseStats.Controls.Add(this.groupBox6);
+            this.tabBaseStats.Controls.Add(this.groupBox5);
+            this.tabBaseStats.Controls.Add(this.groupBox4);
+            this.tabBaseStats.Controls.Add(this.groupBox3);
+            this.tabBaseStats.Controls.Add(this.groupBox2);
+            this.tabBaseStats.Controls.Add(this.groupBox1);
+            this.tabBaseStats.Location = new System.Drawing.Point(4, 25);
+            this.tabBaseStats.Name = "tabBaseStats";
+            this.tabBaseStats.Padding = new System.Windows.Forms.Padding(3);
+            this.tabBaseStats.Size = new System.Drawing.Size(482, 492);
+            this.tabBaseStats.TabIndex = 0;
+            this.tabBaseStats.Text = "Base Stats.";
+            this.tabBaseStats.UseVisualStyleBackColor = true;
+            // 
+            // label20
+            // 
+            this.label20.AutoSize = true;
+            this.label20.Location = new System.Drawing.Point(285, 408);
+            this.label20.Name = "label20";
+            this.label20.Size = new System.Drawing.Size(60, 17);
+            this.label20.TabIndex = 10;
+            this.label20.Text = "Padding";
+            // 
+            // tBasePadding
+            // 
+            this.tBasePadding.Location = new System.Drawing.Point(351, 405);
+            this.tBasePadding.MaximumValue = 65535;
+            this.tBasePadding.MinimumValue = 0;
+            this.tBasePadding.Name = "tBasePadding";
+            this.tBasePadding.Size = new System.Drawing.Size(89, 22);
+            this.tBasePadding.TabIndex = 9;
+            this.tBasePadding.Text = "0x0";
+            this.tBasePadding.Value = 0;
+            // 
+            // chkBaseFlipSprite
+            // 
+            this.chkBaseFlipSprite.AutoSize = true;
+            this.chkBaseFlipSprite.Location = new System.Drawing.Point(288, 378);
+            this.chkBaseFlipSprite.Name = "chkBaseFlipSprite";
+            this.chkBaseFlipSprite.Size = new System.Drawing.Size(172, 21);
+            this.chkBaseFlipSprite.TabIndex = 8;
+            this.chkBaseFlipSprite.Text = "Flip sprite on summary";
+            this.chkBaseFlipSprite.UseVisualStyleBackColor = true;
+            // 
+            // groupBox8
+            // 
+            this.groupBox8.Controls.Add(this.tBaseFriendship);
+            this.groupBox8.Controls.Add(this.label21);
+            this.groupBox8.Controls.Add(this.tBaseRunRate);
+            this.groupBox8.Controls.Add(this.label18);
+            this.groupBox8.Controls.Add(this.label19);
+            this.groupBox8.Controls.Add(this.tBaseCatchRate);
+            this.groupBox8.Location = new System.Drawing.Point(288, 267);
+            this.groupBox8.Name = "groupBox8";
+            this.groupBox8.Size = new System.Drawing.Size(152, 105);
+            this.groupBox8.TabIndex = 7;
+            this.groupBox8.TabStop = false;
+            this.groupBox8.Text = "Capture";
+            // 
+            // tBaseRunRate
+            // 
+            this.tBaseRunRate.Location = new System.Drawing.Point(90, 49);
+            this.tBaseRunRate.MaximumValue = 255;
+            this.tBaseRunRate.MinimumValue = 0;
+            this.tBaseRunRate.Name = "tBaseRunRate";
+            this.tBaseRunRate.Size = new System.Drawing.Size(56, 22);
+            this.tBaseRunRate.TabIndex = 14;
+            this.tBaseRunRate.Text = "0";
+            this.tBaseRunRate.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.tBaseRunRate.Value = 0;
+            // 
+            // label18
+            // 
+            this.label18.AutoSize = true;
+            this.label18.Location = new System.Drawing.Point(6, 52);
+            this.label18.Name = "label18";
+            this.label18.Size = new System.Drawing.Size(68, 17);
+            this.label18.TabIndex = 13;
+            this.label18.Text = "Run Rate";
+            // 
+            // label19
+            // 
+            this.label19.AutoSize = true;
+            this.label19.Location = new System.Drawing.Point(6, 24);
+            this.label19.Name = "label19";
+            this.label19.Size = new System.Drawing.Size(78, 17);
+            this.label19.TabIndex = 12;
+            this.label19.Text = "Catch Rate";
+            // 
+            // tBaseCatchRate
+            // 
+            this.tBaseCatchRate.Location = new System.Drawing.Point(90, 21);
+            this.tBaseCatchRate.MaximumValue = 255;
+            this.tBaseCatchRate.MinimumValue = 0;
+            this.tBaseCatchRate.Name = "tBaseCatchRate";
+            this.tBaseCatchRate.Size = new System.Drawing.Size(56, 22);
+            this.tBaseCatchRate.TabIndex = 11;
+            this.tBaseCatchRate.Text = "0";
+            this.tBaseCatchRate.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.tBaseCatchRate.Value = 0;
             // 
             // groupBox7
             // 
@@ -261,9 +362,9 @@
             // 
             // groupBox6
             // 
+            this.groupBox6.Controls.Add(this.tBaseGenderRatio);
             this.groupBox6.Controls.Add(this.lBaseGender);
             this.groupBox6.Controls.Add(this.label17);
-            this.groupBox6.Controls.Add(this.trkBaseGender);
             this.groupBox6.Controls.Add(this.label14);
             this.groupBox6.Controls.Add(this.tBaseHatchTime);
             this.groupBox6.Controls.Add(this.label13);
@@ -271,15 +372,28 @@
             this.groupBox6.Controls.Add(this.cBaseEggGroup);
             this.groupBox6.Location = new System.Drawing.Point(6, 286);
             this.groupBox6.Name = "groupBox6";
-            this.groupBox6.Size = new System.Drawing.Size(276, 246);
+            this.groupBox6.Size = new System.Drawing.Size(276, 154);
             this.groupBox6.TabIndex = 5;
             this.groupBox6.TabStop = false;
             this.groupBox6.Text = "Breeding";
             // 
+            // tBaseGenderRatio
+            // 
+            this.tBaseGenderRatio.Location = new System.Drawing.Point(94, 109);
+            this.tBaseGenderRatio.MaximumValue = 255;
+            this.tBaseGenderRatio.MinimumValue = 0;
+            this.tBaseGenderRatio.Name = "tBaseGenderRatio";
+            this.tBaseGenderRatio.Size = new System.Drawing.Size(56, 22);
+            this.tBaseGenderRatio.TabIndex = 10;
+            this.tBaseGenderRatio.Text = "0";
+            this.tBaseGenderRatio.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.tBaseGenderRatio.Value = 0;
+            this.tBaseGenderRatio.TextChanged += new System.EventHandler(this.tBaseGenderRatio_TextChanged);
+            // 
             // lBaseGender
             // 
             this.lBaseGender.AutoSize = true;
-            this.lBaseGender.Location = new System.Drawing.Point(82, 109);
+            this.lBaseGender.Location = new System.Drawing.Point(6, 134);
             this.lBaseGender.Name = "lBaseGender";
             this.lBaseGender.Size = new System.Drawing.Size(188, 17);
             this.lBaseGender.TabIndex = 9;
@@ -293,17 +407,6 @@
             this.label17.Size = new System.Drawing.Size(56, 17);
             this.label17.TabIndex = 7;
             this.label17.Text = "Gender";
-            // 
-            // trkBaseGender
-            // 
-            this.trkBaseGender.BackColor = System.Drawing.SystemColors.Window;
-            this.trkBaseGender.Location = new System.Drawing.Point(6, 129);
-            this.trkBaseGender.Maximum = 255;
-            this.trkBaseGender.Name = "trkBaseGender";
-            this.trkBaseGender.Size = new System.Drawing.Size(264, 56);
-            this.trkBaseGender.TabIndex = 8;
-            this.trkBaseGender.TickFrequency = 31;
-            this.trkBaseGender.ValueChanged += new System.EventHandler(this.trkBaseGender_ValueChanged);
             // 
             // label14
             // 
@@ -760,16 +863,16 @@
             this.label1.TabIndex = 0;
             this.label1.Text = "HP";
             // 
-            // tabPage2
+            // tabEvolutions
             // 
-            this.tabPage2.Controls.Add(this.listEvolutions);
-            this.tabPage2.Location = new System.Drawing.Point(4, 25);
-            this.tabPage2.Name = "tabPage2";
-            this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(482, 570);
-            this.tabPage2.TabIndex = 1;
-            this.tabPage2.Text = "Evolutions";
-            this.tabPage2.UseVisualStyleBackColor = true;
+            this.tabEvolutions.Controls.Add(this.listEvolutions);
+            this.tabEvolutions.Location = new System.Drawing.Point(4, 25);
+            this.tabEvolutions.Name = "tabEvolutions";
+            this.tabEvolutions.Padding = new System.Windows.Forms.Padding(3);
+            this.tabEvolutions.Size = new System.Drawing.Size(482, 532);
+            this.tabEvolutions.TabIndex = 1;
+            this.tabEvolutions.Text = "Evolutions";
+            this.tabEvolutions.UseVisualStyleBackColor = true;
             // 
             // listEvolutions
             // 
@@ -809,11 +912,32 @@
             this.colEvolutionPadding.Text = "Padding";
             this.colEvolutionPadding.Width = 64;
             // 
+            // tBaseFriendship
+            // 
+            this.tBaseFriendship.Location = new System.Drawing.Point(90, 77);
+            this.tBaseFriendship.MaximumValue = 255;
+            this.tBaseFriendship.MinimumValue = 0;
+            this.tBaseFriendship.Name = "tBaseFriendship";
+            this.tBaseFriendship.Size = new System.Drawing.Size(56, 22);
+            this.tBaseFriendship.TabIndex = 16;
+            this.tBaseFriendship.Text = "0";
+            this.tBaseFriendship.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.tBaseFriendship.Value = 0;
+            // 
+            // label21
+            // 
+            this.label21.AutoSize = true;
+            this.label21.Location = new System.Drawing.Point(6, 80);
+            this.label21.Name = "label21";
+            this.label21.Size = new System.Drawing.Size(74, 17);
+            this.label21.TabIndex = 15;
+            this.label21.Text = "Friendship";
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(784, 632);
+            this.ClientSize = new System.Drawing.Size(784, 554);
             this.Controls.Add(this.tabControl1);
             this.Controls.Add(this.listBox1);
             this.Controls.Add(this.menuStrip1);
@@ -825,12 +949,14 @@
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
             this.tabControl1.ResumeLayout(false);
-            this.tabPage1.ResumeLayout(false);
+            this.tabBaseStats.ResumeLayout(false);
+            this.tabBaseStats.PerformLayout();
+            this.groupBox8.ResumeLayout(false);
+            this.groupBox8.PerformLayout();
             this.groupBox7.ResumeLayout(false);
             this.groupBox7.PerformLayout();
             this.groupBox6.ResumeLayout(false);
             this.groupBox6.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.trkBaseGender)).EndInit();
             this.groupBox5.ResumeLayout(false);
             this.groupBox4.ResumeLayout(false);
             this.groupBox3.ResumeLayout(false);
@@ -838,7 +964,7 @@
             this.groupBox2.PerformLayout();
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
-            this.tabPage2.ResumeLayout(false);
+            this.tabEvolutions.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -853,8 +979,8 @@
         private System.Windows.Forms.ListBox listBox1;
         private System.Windows.Forms.ToolStripMenuItem saveToolStripMenuItem;
         private System.Windows.Forms.TabControl tabControl1;
-        private System.Windows.Forms.TabPage tabPage1;
-        private System.Windows.Forms.TabPage tabPage2;
+        private System.Windows.Forms.TabPage tabBaseStats;
+        private System.Windows.Forms.TabPage tabEvolutions;
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.Label label1;
         private NumberBox tBaseSpecialDefense;
@@ -909,8 +1035,18 @@
         private System.Windows.Forms.Label label16;
         private NumberBox tBaseExperienceYield;
         private System.Windows.Forms.Label label17;
-        private System.Windows.Forms.TrackBar trkBaseGender;
         private System.Windows.Forms.Label lBaseGender;
+        private NumberBox tBaseGenderRatio;
+        private System.Windows.Forms.GroupBox groupBox8;
+        private NumberBox tBaseRunRate;
+        private System.Windows.Forms.Label label18;
+        private System.Windows.Forms.Label label19;
+        private NumberBox tBaseCatchRate;
+        private System.Windows.Forms.CheckBox chkBaseFlipSprite;
+        private HexBox tBasePadding;
+        private System.Windows.Forms.Label label20;
+        private NumberBox tBaseFriendship;
+        private System.Windows.Forms.Label label21;
     }
 }
 

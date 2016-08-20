@@ -35,7 +35,6 @@ namespace Lost
         int abilityCount;
         int itemCount;
 
-        // TODO: remove this thing
         //string[] evolutionTypes = "-------,Friendship,Friendship (Day),Friendship (Night),Level,Trade,Trade (w/ Item),Stone,ATK > DEF,ATK = DEF,ATK < DEF,High Personality,Low Personality,Spawn a Second,Create Spawn,Beauty".Split(',');
         Dictionary<int, string> evolutionTypes = new Dictionary<int, string>();
         Dictionary<int, string> evolutionParameters = new Dictionary<int, string>();
@@ -275,7 +274,7 @@ namespace Lost
 
         void SavePokemon()
         {
-            var firstPokemon = romInfo.GetInt32(rom.Code, "BaseStatsData", 16);
+            var firstPokemon = romInfo.GetInt32("pokemon", "Data", 16);
 
             rom.Seek(firstPokemon);
             for (int i = 0; i < pokemonCount; i++)
@@ -309,7 +308,7 @@ namespace Lost
 
         void SaveNames()
         {
-            var nameTable = romInfo.GetInt32(rom.Code, "PokemonNames", 16);
+            var nameTable = romInfo.GetInt32("pokemon", "Names", 16);
 
             rom.Seek(nameTable);
             rom.WriteTextTable(names, 11, CharacterEncoding.English);
@@ -317,7 +316,7 @@ namespace Lost
 
         void SaveEvolutions()
         {
-            var firstEvolution = romInfo.GetInt32(rom.Code, "EvolutionData", 16);
+            var firstEvolution = romInfo.GetInt32("evolutions", "Data", 16);
 
             rom.Seek(firstEvolution);
             for (int i = 0; i < pokemonCount; i++)
@@ -376,7 +375,13 @@ namespace Lost
             cBaseLevelRate.SelectedIndex = pokemon[index].LevelRate;
             tBaseExperienceYield.Value = pokemon[index].BaseExperience;
 
-            trkBaseGender.Value = pokemon[index].GenderRatio;
+            tBaseGenderRatio.Value = pokemon[index].GenderRatio;
+
+            tBaseCatchRate.Value = pokemon[index].CatchRate;
+            tBaseRunRate.Value = pokemon[index].RunRate;
+
+            chkBaseFlipSprite.Checked = (pokemon[index].ColorFlip & 0x80) == 0x80;
+            tBasePadding.Value = pokemon[index].Padding;
 
             // Evolutions
             listEvolutions.Items.Clear();
@@ -415,6 +420,11 @@ namespace Lost
             cBaseEggGroup.SelectedIndex = 0;
             cBaseEggGroup2.SelectedIndex = 0;
             tBaseHatchTime.Value = 0;
+            tBaseGenderRatio.Value = 0;
+            tBaseCatchRate.Value = 0;
+            tBaseRunRate.Value = 0;
+            chkBaseFlipSprite.Checked = false;
+            tBasePadding.Value = 0;
 
             // Evolutions
             listEvolutions.Items.Clear();
