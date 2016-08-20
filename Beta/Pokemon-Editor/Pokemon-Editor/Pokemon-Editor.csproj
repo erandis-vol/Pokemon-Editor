@@ -48,6 +48,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="GBA\Evolution.cs" />
+    <Compile Include="GBA\Pokedex.cs" />
     <Compile Include="GBA\Pokemon.cs" />
     <Compile Include="GBA\ROM.cs" />
     <Compile Include="GBA\TextTable.cs" />

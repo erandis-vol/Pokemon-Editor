@@ -162,12 +162,26 @@ namespace Lost.GBA
         }
 
         // read a GBA string
-        public string ReadText(int length, CharacterEncoding encoding = CharacterEncoding.English)
+        public string ReadText(CharacterEncoding encoding)
+        {
+            // read string until FF
+            var buffer = new List<byte>();
+            while (PeekByte() != 0xFF)
+            {
+                buffer.Add(ReadByte());
+            }
+            buffer.Add(ReadByte());
+
+            // convert to string
+            return TextTable.GetString(buffer.ToArray(), encoding);
+        }
+
+        public string ReadText(int length, CharacterEncoding encoding)
         {
             return TextTable.GetString(ReadBytes(length), encoding);
         }
 
-        public string[] ReadTextTable(int stringLength, int tableSize, CharacterEncoding encoding = CharacterEncoding.English)
+        public string[] ReadTextTable(int stringLength, int tableSize, CharacterEncoding encoding)
         {
             var table = new string[tableSize];
             for (int i = 0; i < tableSize; i++)

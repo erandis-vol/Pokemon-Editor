@@ -21,6 +21,8 @@ namespace Lost
         Pokemon[] pokemon;
         string[] names;
         Evolution[,] evolutions;
+        ushort[] nationalOrder;
+        PokedexEntry[] pokedex;
 
         // data that is not saved
         string[] types;
@@ -111,6 +113,9 @@ namespace Lost
             LoadNames();
             LoadPokemon();
             LoadEvolutions();
+            LoadPokedexOrder();
+            LoadPokedex();
+
             LoadTypes();
             LoadAbilities();
             LoadItems();
@@ -158,11 +163,9 @@ namespace Lost
 
         void LoadEvolutions()
         {
-            var firstEvolution = romInfo.GetInt32("evolutions", "Data", 16);
-
-            rom.Seek(firstEvolution);
-
             evolutions = new Evolution[pokemonCount, evolutionCount];
+
+            rom.Seek(romInfo.GetInt32("evolutions", "Data", 16));
             for (int i = 0; i < pokemonCount; i++)
             {
                 for (int j = 0; j < evolutionCount; j++)
@@ -181,6 +184,127 @@ namespace Lost
 
             rom.Seek(nameTable);
             names = rom.ReadTextTable(11, pokemonCount, CharacterEncoding.English);
+        }
+
+        void LoadPokedexOrder()
+        {
+            // load national pokedex order
+            // !!! missingno. does not have an entry !!!
+            rom.Seek(romInfo.GetInt32("pokedex", "Order", 16));
+            nationalOrder = new ushort[pokemonCount];
+
+            for (int i = 1; i < pokemonCount; i++)
+            {
+                nationalOrder[i] = rom.ReadUInt16();
+            }
+        }
+
+        void LoadPokedex()
+        {
+            // not working yet
+
+            // load pokedex entries
+            // assumes order is loaded
+            var firstEntry = romInfo.GetInt32("pokedex", "Data", 16);
+
+            // number of entries is equal to:
+            // total - unused_gap - unown_gap (iff expanded)
+            var entryCount = pokemonCount - 25 - (pokemonCount > 412 ? 28 : 0);
+
+            pokedex = new PokedexEntry[entryCount];
+            switch (romInfo.GetString("pokedex", "Format"))
+            {
+                case "RS": // 2 pages, 36 bytes
+                    for (int i = 0; i < entryCount; i++)
+                    {
+                        rom.Seek(firstEntry + i * 36);
+
+                        // read entry
+                        pokedex[i].Species = rom.ReadText(12, CharacterEncoding.English);
+                        pokedex[i].Height = rom.ReadUInt16();
+                        pokedex[i].Weight = rom.ReadUInt16();
+                        pokedex[i].Page1.Offset = rom.ReadPointer();
+                        pokedex[i].Page2.Offset = rom.ReadPointer();
+                        pokedex[i].Padding = rom.ReadUInt16();
+                        pokedex[i].PokemonScale = rom.ReadUInt16();
+                        pokedex[i].PokemonOffset = rom.ReadUInt16();
+                        pokedex[i].TrainerScale = rom.ReadUInt16();
+                        pokedex[i].TrainerOffset = rom.ReadUInt16();
+                        pokedex[i].Padding2 = rom.ReadUInt16();
+
+                        // read pages
+                        if (pokedex[i].Page1.Offset > 0)
+                        {
+                            rom.Seek(pokedex[i].Page1.Offset);
+                            pokedex[i].Page1.Text = rom.ReadText(CharacterEncoding.English);
+                        }
+
+                        if (pokedex[i].Page2.Offset > 0)
+                        {
+                            rom.Seek(pokedex[i].Page2.Offset);
+                            pokedex[i].Page2.Text = rom.ReadText(CharacterEncoding.English);
+                        }
+                    }
+                    break;
+
+                case "FRLG": // 1 page, 36 bytes
+                    for (int i = 0; i < entryCount; i++)
+                    {
+                        rom.Seek(firstEntry + i * 36);
+
+                        pokedex[i].Species = rom.ReadText(12, CharacterEncoding.English);
+                        pokedex[i].Height = rom.ReadUInt16();
+                        pokedex[i].Weight = rom.ReadUInt16();
+                        pokedex[i].Page1.Offset = rom.ReadPointer();
+                        pokedex[i].Page2.Offset = rom.ReadPointer();
+                        pokedex[i].Padding = rom.ReadUInt16();
+                        pokedex[i].PokemonScale = rom.ReadUInt16();
+                        pokedex[i].PokemonOffset = rom.ReadUInt16();
+                        pokedex[i].TrainerScale = rom.ReadUInt16();
+                        pokedex[i].TrainerOffset = rom.ReadUInt16();
+                        pokedex[i].Padding2 = rom.ReadUInt16();
+
+                        if (pokedex[i].Page1.Offset > 0)
+                        {
+                            rom.Seek(pokedex[i].Page1.Offset);
+                            pokedex[i].Page1.Text = rom.ReadText(CharacterEncoding.English);
+                        }
+
+                        if (pokedex[i].Page2.Offset > 0) // note: on FRLG this *should* always be 0
+                        {
+                            rom.Seek(pokedex[i].Page2.Offset);
+                            pokedex[i].Page2.Text = rom.ReadText(CharacterEncoding.English);
+                        }
+                    }
+                    break;
+
+                case "E": // 1 page, 32 bytes
+                    for (int i = 0; i < entryCount; i++)
+                    {
+                        rom.Seek(firstEntry + i * 32);
+
+                        pokedex[i].Species = rom.ReadText(12, CharacterEncoding.English);
+                        pokedex[i].Height = rom.ReadUInt16();
+                        pokedex[i].Weight = rom.ReadUInt16();
+                        pokedex[i].Page1.Offset = rom.ReadPointer();
+                        pokedex[i].Padding = rom.ReadUInt16();
+                        pokedex[i].PokemonScale = rom.ReadUInt16();
+                        pokedex[i].PokemonOffset = rom.ReadUInt16();
+                        pokedex[i].TrainerScale = rom.ReadUInt16();
+                        pokedex[i].TrainerOffset = rom.ReadUInt16();
+                        pokedex[i].Padding2 = rom.ReadUInt16();
+
+                        if (pokedex[i].Page1.Offset > 0)
+                        {
+                            rom.Seek(pokedex[i].Page1.Offset);
+                            pokedex[i].Page1.Text = rom.ReadText(CharacterEncoding.English);
+                        }
+                    }
+                    break;
+
+                default:
+                    throw new Exception("Invalid Pokédex format!");
+            }
         }
 
         // data that will not be saved:
@@ -388,6 +512,28 @@ namespace Lost
             for (int i = 0; i < evolutionCount; i++)
             {
                 listEvolutions.Items.Add(DisplayEvolutionItem(ref evolutions[index, i], i));
+            }
+
+            // Pokedex
+            var pokedexIndex = nationalOrder[index];
+            if (pokedexIndex < pokedex.Length)
+            {
+                tDexPage1.Text = pokedex[pokedexIndex].Page1.Text;
+                tDexPage2.Text = pokedex[pokedexIndex].Page2.Text;
+
+                tDexPage1.Enabled = true;
+                if (string.IsNullOrEmpty(pokedex[pokedexIndex].Page2.Text))
+                    tDexPage2.Enabled = false;
+                else
+                    tDexPage2.Enabled = true;
+            }
+            else
+            {
+                tDexPage1.Text = "- No Pokédex entry. -";
+                tDexPage2.Text = string.Empty;
+
+                tDexPage1.Enabled = false;
+                tDexPage2.Enabled = false;
             }
 
             ignore = false;

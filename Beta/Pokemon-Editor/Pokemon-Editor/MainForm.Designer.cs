@@ -42,6 +42,8 @@
             this.tBasePadding = new Lost.HexBox();
             this.chkBaseFlipSprite = new System.Windows.Forms.CheckBox();
             this.groupBox8 = new System.Windows.Forms.GroupBox();
+            this.tBaseFriendship = new Lost.NumberBox();
+            this.label21 = new System.Windows.Forms.Label();
             this.tBaseRunRate = new Lost.NumberBox();
             this.label18 = new System.Windows.Forms.Label();
             this.label19 = new System.Windows.Forms.Label();
@@ -101,8 +103,9 @@
             this.colEvolutionParameter = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.colEvolutionTarget = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.colEvolutionPadding = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.tBaseFriendship = new Lost.NumberBox();
-            this.label21 = new System.Windows.Forms.Label();
+            this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.tDexPage1 = new System.Windows.Forms.RichTextBox();
+            this.tDexPage2 = new System.Windows.Forms.RichTextBox();
             this.menuStrip1.SuspendLayout();
             this.tabControl1.SuspendLayout();
             this.tabBaseStats.SuspendLayout();
@@ -115,6 +118,7 @@
             this.groupBox2.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.tabEvolutions.SuspendLayout();
+            this.tabPage1.SuspendLayout();
             this.SuspendLayout();
             // 
             // menuStrip1
@@ -188,6 +192,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.tabControl1.Controls.Add(this.tabBaseStats);
             this.tabControl1.Controls.Add(this.tabEvolutions);
+            this.tabControl1.Controls.Add(this.tabPage1);
             this.tabControl1.Location = new System.Drawing.Point(282, 31);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
@@ -259,6 +264,27 @@
             this.groupBox8.TabIndex = 7;
             this.groupBox8.TabStop = false;
             this.groupBox8.Text = "Capture";
+            // 
+            // tBaseFriendship
+            // 
+            this.tBaseFriendship.Location = new System.Drawing.Point(90, 77);
+            this.tBaseFriendship.MaximumValue = 255;
+            this.tBaseFriendship.MinimumValue = 0;
+            this.tBaseFriendship.Name = "tBaseFriendship";
+            this.tBaseFriendship.Size = new System.Drawing.Size(56, 22);
+            this.tBaseFriendship.TabIndex = 16;
+            this.tBaseFriendship.Text = "0";
+            this.tBaseFriendship.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.tBaseFriendship.Value = 0;
+            // 
+            // label21
+            // 
+            this.label21.AutoSize = true;
+            this.label21.Location = new System.Drawing.Point(6, 80);
+            this.label21.Name = "label21";
+            this.label21.Size = new System.Drawing.Size(74, 17);
+            this.label21.TabIndex = 15;
+            this.label21.Text = "Friendship";
             // 
             // tBaseRunRate
             // 
@@ -869,7 +895,7 @@
             this.tabEvolutions.Location = new System.Drawing.Point(4, 25);
             this.tabEvolutions.Name = "tabEvolutions";
             this.tabEvolutions.Padding = new System.Windows.Forms.Padding(3);
-            this.tabEvolutions.Size = new System.Drawing.Size(482, 532);
+            this.tabEvolutions.Size = new System.Drawing.Size(482, 492);
             this.tabEvolutions.TabIndex = 1;
             this.tabEvolutions.Text = "Evolutions";
             this.tabEvolutions.UseVisualStyleBackColor = true;
@@ -912,26 +938,33 @@
             this.colEvolutionPadding.Text = "Padding";
             this.colEvolutionPadding.Width = 64;
             // 
-            // tBaseFriendship
+            // tabPage1
             // 
-            this.tBaseFriendship.Location = new System.Drawing.Point(90, 77);
-            this.tBaseFriendship.MaximumValue = 255;
-            this.tBaseFriendship.MinimumValue = 0;
-            this.tBaseFriendship.Name = "tBaseFriendship";
-            this.tBaseFriendship.Size = new System.Drawing.Size(56, 22);
-            this.tBaseFriendship.TabIndex = 16;
-            this.tBaseFriendship.Text = "0";
-            this.tBaseFriendship.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.tBaseFriendship.Value = 0;
+            this.tabPage1.Controls.Add(this.tDexPage2);
+            this.tabPage1.Controls.Add(this.tDexPage1);
+            this.tabPage1.Location = new System.Drawing.Point(4, 25);
+            this.tabPage1.Name = "tabPage1";
+            this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage1.Size = new System.Drawing.Size(482, 492);
+            this.tabPage1.TabIndex = 2;
+            this.tabPage1.Text = "Pokédex";
+            this.tabPage1.UseVisualStyleBackColor = true;
             // 
-            // label21
+            // tDexPage1
             // 
-            this.label21.AutoSize = true;
-            this.label21.Location = new System.Drawing.Point(6, 80);
-            this.label21.Name = "label21";
-            this.label21.Size = new System.Drawing.Size(74, 17);
-            this.label21.TabIndex = 15;
-            this.label21.Text = "Friendship";
+            this.tDexPage1.Location = new System.Drawing.Point(6, 6);
+            this.tDexPage1.Name = "tDexPage1";
+            this.tDexPage1.Size = new System.Drawing.Size(286, 121);
+            this.tDexPage1.TabIndex = 0;
+            this.tDexPage1.Text = "";
+            // 
+            // tDexPage2
+            // 
+            this.tDexPage2.Location = new System.Drawing.Point(6, 133);
+            this.tDexPage2.Name = "tDexPage2";
+            this.tDexPage2.Size = new System.Drawing.Size(286, 121);
+            this.tDexPage2.TabIndex = 1;
+            this.tDexPage2.Text = "";
             // 
             // MainForm
             // 
@@ -965,6 +998,7 @@
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             this.tabEvolutions.ResumeLayout(false);
+            this.tabPage1.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -1047,6 +1081,9 @@
         private System.Windows.Forms.Label label20;
         private NumberBox tBaseFriendship;
         private System.Windows.Forms.Label label21;
+        private System.Windows.Forms.TabPage tabPage1;
+        private System.Windows.Forms.RichTextBox tDexPage1;
+        private System.Windows.Forms.RichTextBox tDexPage2;
     }
 }
 
