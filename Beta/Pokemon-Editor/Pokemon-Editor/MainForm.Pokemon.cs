@@ -36,23 +36,9 @@ namespace Lost
         int itemCount;
 
         // TODO: remove this thing
-        string[] evolutionTypes = "-------,Friendship,Friendship (Day),Friendship (Night),Level,Trade,Trade (w/ Item),Stone,ATK > DEF,ATK = DEF,ATK < DEF,High Personality,Low Personality,Spawn a Second,Create Spawn,Beauty".Split(',');
-        Dictionary<int, string> evolutionParameters = new Dictionary<int, string>()
-        {
-            {4, "level" },
-            {6, "item" },
-            {7, "item" },
-            {8, "level" },
-            {9, "level" },
-            {10, "level" },
-            {11, "level" },
-            {12, "level" },
-            {13, "level" },
-            {14, "level" },
-
-            {254, "item" },
-        };
-
+        //string[] evolutionTypes = "-------,Friendship,Friendship (Day),Friendship (Night),Level,Trade,Trade (w/ Item),Stone,ATK > DEF,ATK = DEF,ATK < DEF,High Personality,Low Personality,Spawn a Second,Create Spawn,Beauty".Split(',');
+        Dictionary<int, string> evolutionTypes = new Dictionary<int, string>();
+        Dictionary<int, string> evolutionParameters = new Dictionary<int, string>();
 
         public bool OpenROM(string filename)
         {
@@ -65,10 +51,11 @@ namespace Lost
                 temp = new ROM(filename);
 
                 // check that it is valid
-                if (!romInfo.ContainsSection(temp.Code))
+                if (!File.Exists($@"ROMs\{temp.Code}.ini"))
                     throw new Exception($"ROM type {temp.Code} is not supported!");
 
-                // TODO: create custom settings
+                // TODO: custom settings
+                romInfo = Settings.FromFile($@"ROMs\{temp.Code}.ini", "ini");
             }
             catch (Exception ex)
             {
@@ -97,12 +84,29 @@ namespace Lost
             if (rom == null) return;
 
             // get limits from .ini
-            pokemonCount = romInfo.GetInt32(rom.Code, "NumberOfPokemon");
-            evolutionCount = romInfo.GetInt32(rom.Code, "NumberOfEvolutions");
+            pokemonCount = romInfo.GetInt32("pokemon", "Count");
+            evolutionCount = romInfo.GetInt32("evolutions", "Count");
 
             typeCount = 17; // default value, changed during loading
-            abilityCount = romInfo.GetInt32(rom.Code, "NumberOfAbilities");
-            itemCount = romInfo.GetInt32(rom.Code, "NumberOfItems");
+            abilityCount = romInfo.GetInt32("abilities", "Count");
+            itemCount = romInfo.GetInt32("items", "Count");
+
+            // get other stuff from ini
+            // TODO: should this be moved elsewhere
+            evolutionTypes.Clear();
+            evolutionParameters.Clear();
+
+            for (int i = 0; i <= 0xFF; i++)
+            {
+                if (romInfo.ContainsKey("evolution_types", $"{i:X2}"))
+                    evolutionTypes[i] = romInfo.GetString("evolution_types", $"{i:X2}");
+
+                if (romInfo.ContainsKey("evolution_parameters", $"{i:X2}"))
+                    evolutionParameters[i] = romInfo.GetString("evolution_parameters", $"{i:X2}");                
+            }
+
+            if (!evolutionTypes.ContainsKey(0))
+                evolutionTypes[0] = "None";
 
             // load all data needed
             LoadNames();
@@ -118,7 +122,7 @@ namespace Lost
         void LoadPokemon()
         {
             // get needed info from ini
-            var firstPokemon = romInfo.GetInt32(rom.Code, "BaseStatsData", 16);
+            var firstPokemon = romInfo.GetInt32("pokemon", "Data", 16);
 
             // seek firstPokemon and begin
             rom.Seek(firstPokemon);
@@ -155,8 +159,7 @@ namespace Lost
 
         void LoadEvolutions()
         {
-            var pokemonCount = romInfo.GetInt32(rom.Code, "NumberOfPokemon");
-            var firstEvolution = romInfo.GetInt32(rom.Code, "EvolutionData", 16);
+            var firstEvolution = romInfo.GetInt32("evolutions", "Data", 16);
 
             rom.Seek(firstEvolution);
 
@@ -175,8 +178,7 @@ namespace Lost
 
         void LoadNames()
         {
-            var pokemonCount = romInfo.GetInt32(rom.Code, "NumberOfPokemon");
-            var nameTable = romInfo.GetInt32(rom.Code, "PokemonNames", 16);
+            var nameTable = romInfo.GetInt32("pokemon", "Names", 16);
 
             rom.Seek(nameTable);
             names = rom.ReadTextTable(11, pokemonCount, CharacterEncoding.English);
@@ -186,13 +188,15 @@ namespace Lost
 
         void LoadTypes()
         {
-            var nameTable = romInfo.GetInt32(rom.Code, "TypeNames", 16);
-            var typeChart = romInfo.GetInt32(rom.Code, "TypeChart", 16);
+            var nameTable = romInfo.GetInt32("types", "Names", 16);
+            var typeChart = romInfo.GetInt32("types", "Data", 16);
 
             // first, load the type chart to find the number of types
             var lastType = 0;
 
             rom.Seek(typeChart);
+
+            // normal type data
             while (rom.PeekByte() != 0xFF)
             {
                 var attacker = rom.ReadByte();
@@ -211,6 +215,7 @@ namespace Lost
                 }
             }
 
+            // foresight type data
             while (rom.PeekByte() != 0xFF)
             {
                 var attacker = rom.ReadByte();
@@ -233,7 +238,7 @@ namespace Lost
 
         void LoadAbilities()
         {
-            var firstAbility = romInfo.GetInt32(rom.Code, "AbilityNames", 16);
+            var firstAbility = romInfo.GetInt32("abilities", "Names", 16);
 
             rom.Seek(firstAbility);
             abilities = rom.ReadTextTable(13, abilityCount, CharacterEncoding.English);
@@ -241,7 +246,7 @@ namespace Lost
 
         void LoadItems()
         {
-            var firstItem = romInfo.GetInt32(rom.Code, "ItemData", 16);
+            var firstItem = romInfo.GetInt32("items", "Data", 16);
 
             items = new string[itemCount];
             for (int i = 0; i < itemCount; i++)
@@ -368,6 +373,11 @@ namespace Lost
             cBaseEggGroup2.SelectedIndex = pokemon[index].EggGroup2;
             tBaseHatchTime.Value = pokemon[index].EggCycles;
 
+            cBaseLevelRate.SelectedIndex = pokemon[index].LevelRate;
+            tBaseExperienceYield.Value = pokemon[index].BaseExperience;
+
+            trkBaseGender.Value = pokemon[index].GenderRatio;
+
             // Evolutions
             listEvolutions.Items.Clear();
             for (int i = 0; i < evolutionCount; i++)
@@ -433,7 +443,7 @@ namespace Lost
             item.Tag = index;
 
             // set method name or value
-            if (e.Method < evolutionTypes.Length)
+            if (evolutionTypes.ContainsKey(e.Method))
                 item.Text = evolutionTypes[e.Method];
             else
                 item.Text = e.Method.ToString("X2");

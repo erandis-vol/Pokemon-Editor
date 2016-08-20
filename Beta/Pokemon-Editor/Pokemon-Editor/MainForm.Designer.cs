@@ -32,11 +32,21 @@
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.saveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.settingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.automaticallyRepointToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             this.listBox1 = new System.Windows.Forms.ListBox();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.groupBox7 = new System.Windows.Forms.GroupBox();
+            this.label16 = new System.Windows.Forms.Label();
+            this.tBaseExperienceYield = new Lost.NumberBox();
+            this.label15 = new System.Windows.Forms.Label();
+            this.cBaseLevelRate = new System.Windows.Forms.ComboBox();
             this.groupBox6 = new System.Windows.Forms.GroupBox();
+            this.lBaseGender = new System.Windows.Forms.Label();
+            this.label17 = new System.Windows.Forms.Label();
+            this.trkBaseGender = new System.Windows.Forms.TrackBar();
             this.label14 = new System.Windows.Forms.Label();
             this.tBaseHatchTime = new Lost.NumberBox();
             this.label13 = new System.Windows.Forms.Label();
@@ -86,7 +96,9 @@
             this.menuStrip1.SuspendLayout();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
+            this.groupBox7.SuspendLayout();
             this.groupBox6.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.trkBaseGender)).BeginInit();
             this.groupBox5.SuspendLayout();
             this.groupBox4.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -99,7 +111,8 @@
             // 
             this.menuStrip1.ImageScalingSize = new System.Drawing.Size(20, 20);
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.fileToolStripMenuItem});
+            this.fileToolStripMenuItem,
+            this.settingsToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.Size = new System.Drawing.Size(784, 28);
@@ -131,6 +144,23 @@
             this.saveToolStripMenuItem.Text = "&Save";
             this.saveToolStripMenuItem.Click += new System.EventHandler(this.saveToolStripMenuItem_Click);
             // 
+            // settingsToolStripMenuItem
+            // 
+            this.settingsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.automaticallyRepointToolStripMenuItem});
+            this.settingsToolStripMenuItem.Name = "settingsToolStripMenuItem";
+            this.settingsToolStripMenuItem.Size = new System.Drawing.Size(74, 24);
+            this.settingsToolStripMenuItem.Text = "&Settings";
+            // 
+            // automaticallyRepointToolStripMenuItem
+            // 
+            this.automaticallyRepointToolStripMenuItem.Checked = true;
+            this.automaticallyRepointToolStripMenuItem.CheckOnClick = true;
+            this.automaticallyRepointToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.automaticallyRepointToolStripMenuItem.Name = "automaticallyRepointToolStripMenuItem";
+            this.automaticallyRepointToolStripMenuItem.Size = new System.Drawing.Size(232, 26);
+            this.automaticallyRepointToolStripMenuItem.Text = "Automatically &Repoint";
+            // 
             // listBox1
             // 
             this.listBox1.FormattingEnabled = true;
@@ -151,11 +181,12 @@
             this.tabControl1.Location = new System.Drawing.Point(282, 31);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(490, 504);
+            this.tabControl1.Size = new System.Drawing.Size(490, 599);
             this.tabControl1.TabIndex = 2;
             // 
             // tabPage1
             // 
+            this.tabPage1.Controls.Add(this.groupBox7);
             this.tabPage1.Controls.Add(this.groupBox6);
             this.tabPage1.Controls.Add(this.groupBox5);
             this.tabPage1.Controls.Add(this.groupBox4);
@@ -165,24 +196,114 @@
             this.tabPage1.Location = new System.Drawing.Point(4, 25);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(482, 475);
+            this.tabPage1.Size = new System.Drawing.Size(482, 570);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "Base Stats.";
             this.tabPage1.UseVisualStyleBackColor = true;
             // 
+            // groupBox7
+            // 
+            this.groupBox7.Controls.Add(this.label16);
+            this.groupBox7.Controls.Add(this.tBaseExperienceYield);
+            this.groupBox7.Controls.Add(this.label15);
+            this.groupBox7.Controls.Add(this.cBaseLevelRate);
+            this.groupBox7.Location = new System.Drawing.Point(6, 201);
+            this.groupBox7.Name = "groupBox7";
+            this.groupBox7.Size = new System.Drawing.Size(276, 79);
+            this.groupBox7.TabIndex = 6;
+            this.groupBox7.TabStop = false;
+            this.groupBox7.Text = "Growth";
+            // 
+            // label16
+            // 
+            this.label16.AutoSize = true;
+            this.label16.Location = new System.Drawing.Point(6, 54);
+            this.label16.Name = "label16";
+            this.label16.Size = new System.Drawing.Size(70, 17);
+            this.label16.TabIndex = 8;
+            this.label16.Text = "Exp. Yield";
+            // 
+            // tBaseExperienceYield
+            // 
+            this.tBaseExperienceYield.Location = new System.Drawing.Point(94, 51);
+            this.tBaseExperienceYield.MaximumValue = 255;
+            this.tBaseExperienceYield.MinimumValue = 0;
+            this.tBaseExperienceYield.Name = "tBaseExperienceYield";
+            this.tBaseExperienceYield.Size = new System.Drawing.Size(56, 22);
+            this.tBaseExperienceYield.TabIndex = 7;
+            this.tBaseExperienceYield.Text = "0";
+            this.tBaseExperienceYield.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.tBaseExperienceYield.Value = 0;
+            // 
+            // label15
+            // 
+            this.label15.AutoSize = true;
+            this.label15.Location = new System.Drawing.Point(6, 24);
+            this.label15.Name = "label15";
+            this.label15.Size = new System.Drawing.Size(76, 17);
+            this.label15.TabIndex = 6;
+            this.label15.Text = "Level Rate";
+            // 
+            // cBaseLevelRate
+            // 
+            this.cBaseLevelRate.FormattingEnabled = true;
+            this.cBaseLevelRate.Items.AddRange(new object[] {
+            "Medium Fast",
+            "Erratic",
+            "Fluctuating",
+            "Medium Slow",
+            "Fast",
+            "Slow"});
+            this.cBaseLevelRate.Location = new System.Drawing.Point(94, 21);
+            this.cBaseLevelRate.Name = "cBaseLevelRate";
+            this.cBaseLevelRate.Size = new System.Drawing.Size(176, 24);
+            this.cBaseLevelRate.TabIndex = 5;
+            // 
             // groupBox6
             // 
+            this.groupBox6.Controls.Add(this.lBaseGender);
+            this.groupBox6.Controls.Add(this.label17);
+            this.groupBox6.Controls.Add(this.trkBaseGender);
             this.groupBox6.Controls.Add(this.label14);
             this.groupBox6.Controls.Add(this.tBaseHatchTime);
             this.groupBox6.Controls.Add(this.label13);
             this.groupBox6.Controls.Add(this.cBaseEggGroup2);
             this.groupBox6.Controls.Add(this.cBaseEggGroup);
-            this.groupBox6.Location = new System.Drawing.Point(6, 201);
+            this.groupBox6.Location = new System.Drawing.Point(6, 286);
             this.groupBox6.Name = "groupBox6";
-            this.groupBox6.Size = new System.Drawing.Size(276, 109);
+            this.groupBox6.Size = new System.Drawing.Size(276, 246);
             this.groupBox6.TabIndex = 5;
             this.groupBox6.TabStop = false;
             this.groupBox6.Text = "Breeding";
+            // 
+            // lBaseGender
+            // 
+            this.lBaseGender.AutoSize = true;
+            this.lBaseGender.Location = new System.Drawing.Point(82, 109);
+            this.lBaseGender.Name = "lBaseGender";
+            this.lBaseGender.Size = new System.Drawing.Size(188, 17);
+            this.lBaseGender.TabIndex = 9;
+            this.lBaseGender.Text = "100.0% male/100.0% female";
+            // 
+            // label17
+            // 
+            this.label17.AutoSize = true;
+            this.label17.Location = new System.Drawing.Point(6, 109);
+            this.label17.Name = "label17";
+            this.label17.Size = new System.Drawing.Size(56, 17);
+            this.label17.TabIndex = 7;
+            this.label17.Text = "Gender";
+            // 
+            // trkBaseGender
+            // 
+            this.trkBaseGender.BackColor = System.Drawing.SystemColors.Window;
+            this.trkBaseGender.Location = new System.Drawing.Point(6, 129);
+            this.trkBaseGender.Maximum = 255;
+            this.trkBaseGender.Name = "trkBaseGender";
+            this.trkBaseGender.Size = new System.Drawing.Size(264, 56);
+            this.trkBaseGender.TabIndex = 8;
+            this.trkBaseGender.TickFrequency = 31;
+            this.trkBaseGender.ValueChanged += new System.EventHandler(this.trkBaseGender_ValueChanged);
             // 
             // label14
             // 
@@ -202,6 +323,7 @@
             this.tBaseHatchTime.Size = new System.Drawing.Size(56, 22);
             this.tBaseHatchTime.TabIndex = 5;
             this.tBaseHatchTime.Text = "0";
+            this.tBaseHatchTime.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             this.tBaseHatchTime.Value = 0;
             // 
             // label13
@@ -644,7 +766,7 @@
             this.tabPage2.Location = new System.Drawing.Point(4, 25);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(482, 475);
+            this.tabPage2.Size = new System.Drawing.Size(482, 570);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "Evolutions";
             this.tabPage2.UseVisualStyleBackColor = true;
@@ -691,7 +813,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(784, 537);
+            this.ClientSize = new System.Drawing.Size(784, 632);
             this.Controls.Add(this.tabControl1);
             this.Controls.Add(this.listBox1);
             this.Controls.Add(this.menuStrip1);
@@ -704,8 +826,11 @@
             this.menuStrip1.PerformLayout();
             this.tabControl1.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
+            this.groupBox7.ResumeLayout(false);
+            this.groupBox7.PerformLayout();
             this.groupBox6.ResumeLayout(false);
             this.groupBox6.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.trkBaseGender)).EndInit();
             this.groupBox5.ResumeLayout(false);
             this.groupBox4.ResumeLayout(false);
             this.groupBox3.ResumeLayout(false);
@@ -776,6 +901,16 @@
         private System.Windows.Forms.ColumnHeader colEvolutionParameter;
         private System.Windows.Forms.ColumnHeader colEvolutionTarget;
         private System.Windows.Forms.ColumnHeader colEvolutionPadding;
+        private System.Windows.Forms.ToolStripMenuItem settingsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem automaticallyRepointToolStripMenuItem;
+        private System.Windows.Forms.GroupBox groupBox7;
+        private System.Windows.Forms.Label label15;
+        private System.Windows.Forms.ComboBox cBaseLevelRate;
+        private System.Windows.Forms.Label label16;
+        private NumberBox tBaseExperienceYield;
+        private System.Windows.Forms.Label label17;
+        private System.Windows.Forms.TrackBar trkBaseGender;
+        private System.Windows.Forms.Label lBaseGender;
     }
 }
 

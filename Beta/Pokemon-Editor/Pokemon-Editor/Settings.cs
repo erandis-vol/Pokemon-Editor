@@ -247,8 +247,8 @@ namespace Lost
 
         public bool ContainsKey(string section, string key)
         {
-            if (sections.ContainsKey(section))
-                return sections.ContainsKey(key);
+            if (ContainsSection(section))
+                return sections[section].ContainsKey(key);
 
             return false;
         }

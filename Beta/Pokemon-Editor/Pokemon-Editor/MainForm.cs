@@ -22,7 +22,7 @@ namespace Lost
 
         private void MainForm_Load(object sender, EventArgs e)
         {
-            try
+            /*try
             {
                 romInfo = Settings.FromFile("ROMs.ini", "ini");
             }
@@ -30,7 +30,7 @@ namespace Lost
             {
                 MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 Application.Exit();
-            }
+            }*/
         }
 
         private void MainForm_FormClosed(object sender, FormClosedEventArgs e)
@@ -90,6 +90,22 @@ namespace Lost
 
             var pokemonIndex = listBox1.SelectedIndex;
             DisplayPokemon(pokemonIndex);
+        }
+
+        private void trkBaseGender_ValueChanged(object sender, EventArgs e)
+        {
+            Text = trkBaseGender.Value.ToString();
+            if (trkBaseGender.Value == 255)
+            {
+                lBaseGender.Text = "genderless";
+            }
+            else
+            {
+                var percentFemale = trkBaseGender.Value / 254f * 100f;
+                lBaseGender.Text = $"{100f - percentFemale:0.0}% male/{percentFemale:0.0}% female";
+            }
+
+            if (ignore) return;
         }
     }
 }
