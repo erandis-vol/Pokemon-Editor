@@ -17,8 +17,9 @@ namespace Lost
         private Settings romSettings;
 
         // Editable data
-        private Pokemon baseStats;
+        private Pokemon baseStats = new Pokemon();
         private Evolution[] evolutions;
+        private Move[] moveset;
 
         // Cached data
         private string[] names;
@@ -112,7 +113,7 @@ namespace Lost
         /// Loads the specified evolution data.
         /// </summary>
         /// <param name="index">The index of the Pokémon.</param>
-        private void LoadEvolution(int index)
+        private void LoadEvolutions(int index)
         {
             evolutions = new Evolution[evolutionCount];
 
@@ -126,12 +127,113 @@ namespace Lost
             }
         }
 
+        /// <summary>
+        /// Loads the specified moveset data.
+        /// </summary>
+        /// <param name="index">The index of the Pokémon.</param>
+        private void LoadMoveset(int index)
+        {
+            // Read offset of moves in pointer table
+            rom.Seek(romSettings.GetInt32("movesets", "Data", 16) + index * 4);
+            rom.ReadPointerAndSeek();
+
+            // Load moveset based on format
+            List<Move> entries = new List<Move>();
+            switch (romSettings.GetString("movesets", "Format"))
+            {
+                case "extended":
+                    // Three bytes per entry
+                    // 16 bits for the attack, 8 for the level
+                    // FFFF termianted
+                    while (rom.Position < rom.Length - 3)
+                    {
+                        var atk = rom.ReadUInt16();
+                        var lvl = rom.ReadByte();
+                        if (atk == 0xFFFF)
+                            break;
+
+                        entries.Add(new Move {
+                            Attack = atk,
+                            Level = lvl,
+                        });
+                    }
+                    break;
+
+                case "vanilla":
+                default:
+                    // Two bytes per entry
+                    // 9 bits for the attack, 7 for the level
+                    // FFFF terminated (unfortunately)
+                    while (rom.Position < rom.Length - 2)
+                    {
+                        var buffer = rom.ReadUInt16();
+                        if (buffer == 0xFFFF)
+                            break;
+
+                        entries.Add(new Move {
+                            Attack = (ushort)(buffer & 0x1FF),
+                            Level = (byte)((buffer >> 9) & 0x7F),
+                        });
+                    }
+                    break;
+            }
+            moveset = entries.ToArray();
+        }
+
+        /// <summary>
+        /// Loads the number of entries in the specified moveset data.
+        /// </summary>
+        /// <param name="index">The index of the Pokémon.</param>
+        /// <returns>The number of entries currently in the ROM.</returns>
+        private int LoadMovesetLength(int index)
+        {
+            // Read offset of moves in pointer table
+            rom.Seek(romSettings.GetInt32("movesets", "Data", 16) + index * 4);
+            rom.ReadPointerAndSeek();
+
+            // Load moveset based on format
+            int entries = 0;
+            switch (romSettings.GetString("movesets", "Format"))
+            {
+                case "extended":
+                    while (rom.Position < rom.Length - 3)
+                    {
+                        var atk = rom.ReadUInt16();
+                        var lvl = rom.ReadByte();
+                        if (atk == 0xFFFF)
+                            break;
+
+                        entries++;
+                    }
+                    break;
+
+                case "vanilla":
+                default:
+                    while (rom.Position < rom.Length - 2)
+                    {
+                        var buffer = rom.ReadUInt16();
+                        if (buffer == 0xFFFF)
+                            break;
+
+                        entries++;
+                    }
+                    break;
+            }
+            return entries;
+        }
+
+        /// <summary>
+        /// Loads all Pokémon names.
+        /// </summary>
         private void LoadNames()
         {
             rom.Seek(romSettings.GetInt32("pokemon", "Names", 16));
             names = rom.ReadTextTable(11, pokemonCount, Table.Encoding.English);
         }
 
+        /// <summary>
+        /// Loads all type names.
+        /// </summary>
         private void LoadTypes()
         {
             int typeCount = 0;
@@ -192,12 +294,18 @@ namespace Lost
             types = rom.ReadTextTable(7, typeCount, Table.Encoding.English);
         }
 
+        /// <summary>
+        /// Loads all ability names.
+        /// </summary>
         private void LoadAbilities()
         {
             rom.Seek(romSettings.GetInt32("abilities", "Names", 16));
             abilities = rom.ReadTextTable(13, romSettings.GetInt32("abilities", "Count"), Table.Encoding.English);
         }
 
+        /// <summary>
+        /// Loads all item names (not data).
+        /// </summary>
         private void LoadItems()
         {
             var firstItem = romSettings.GetInt32("items", "Data", 16);
@@ -213,6 +321,40 @@ namespace Lost
         #endregion
 
         #region Saving
+
+        /// <summary>
+        /// Writes the current base stats to the ROM.
+        /// </summary>
+        /// <param name="index">The index of the Pokémon.</param>
+        private void SaveBaseStats(int index)
+        {
+            rom.Seek(romSettings.GetInt32("pokemon", "Data", 16) + index * 28);
+
+            rom.WriteByte(baseStats.HP);
+            rom.WriteByte(baseStats.Attack);
+            rom.WriteByte(baseStats.Defense);
+            rom.WriteByte(baseStats.Speed);
+            rom.WriteByte(baseStats.SpecialAttack);
+            rom.WriteByte(baseStats.SpecialDefense);
+            rom.WriteByte(baseStats.Type);
+            rom.WriteByte(baseStats.Type2);
+            rom.WriteByte(baseStats.CatchRate);
+            rom.WriteByte(baseStats.BaseExperience);
+            rom.WriteUInt16(baseStats.EffortYield);
+            rom.WriteUInt16(baseStats.HeldItem);
+            rom.WriteUInt16(baseStats.HeldItem2);
+            rom.WriteByte(baseStats.GenderRatio);
+            rom.WriteByte(baseStats.EggCycles);
+            rom.WriteByte(baseStats.BaseFriendship);
+            rom.WriteByte(baseStats.LevelRate);
+            rom.WriteByte(baseStats.EggGroup);
+            rom.WriteByte(baseStats.EggGroup2);
+            rom.WriteByte(baseStats.Ability);
+            rom.WriteByte(baseStats.Ability2);
+            rom.WriteByte(baseStats.RunRate);
+            rom.WriteByte(baseStats.ColorFlip);
+            rom.WriteUInt16(baseStats.Padding);
+        }
 
         #endregion
     }
