@@ -15,11 +15,11 @@ using GBAHL.Text;
 
 namespace Lost
 {
-    public partial class Form1 : Form
+    public partial class MainForm : Form
     {
         private ROM rom;
 
-        public Form1()
+        public MainForm()
         {
             InitializeComponent();
         }
