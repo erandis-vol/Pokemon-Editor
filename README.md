@@ -1,29 +1,20 @@
-# Hopeless Pokémon Editor
-Copyright 2015-2016 Lost
+# (Hopeless) Pokémon Editor
+Copyright (c) 2014 - 2017 lost
 
-An Pokémon editor for 3rd generation Pokémon games. Currently incomplete, may or may not see further development.
+An Pokémon editor for 3rd generation Pokémon games. Currently being rewritten.
 
 ## Supported games
-All non-Japanese 3rd generation games should be supported. .ini only contains data for English games.
+The following games will be supported by default: `BPRE, BPGE, BPEE, AXVE, AXPE`. Support for Japanese games is not planned at this time.
 
-## Features
-Allows the editing of:
+## (Planned) Features
+Editing of the following is planned:
 * Base stats
 * Evolutions
 * Movesets
 * Pokédex entry
 * Move tutor compatibility (non-RS games)
-* Sprite and icon offsets
-* Cries (incomplete, does not load Treecko+ cries correctly)
+* Sprites and icons
+* Cries (maybe, see [Cry-Editor](https://github.com/doom-desire/Cry-Editor "My existing cry editor.")
 
-Additonally, it can:
-* Expand Pokémon and number of evolutions (FR-only, untested)
-* Export an .ini file for use with Wichu's Advanced Series
+Additonally, it is planned to feature an .ini format compatible with my other programs.
 
-## Basic usage
-When you first open a ROM file with the editor, a custom .ini is created in the ROM file's directory. For example, if you open "BPRE.gba" then "BPRE.hpe.ini" will be created within the file's directory. You can modify this file to suit your game as needed.
-
-The .ini contains an entry for MrDollSteak's ROM base. To use it, change your game's ROM code to "MrDS" with a hex editor and open the game as normal. You can then change your game's code back to "BPRE" but if you do so be sure to edit your game's generated .ini as well to reflect the change.
-
-## Warning
-The majority of this program was coded over a week in 2014... please do not consider this an example of good code or use this as something to learn from.
