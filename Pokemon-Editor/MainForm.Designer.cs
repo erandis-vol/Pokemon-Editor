@@ -162,6 +162,7 @@
             this.listPokemon.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.columnID,
             this.columnPkmn});
+            this.listPokemon.FullRowSelect = true;
             this.listPokemon.GridLines = true;
             this.listPokemon.Location = new System.Drawing.Point(12, 27);
             this.listPokemon.MultiSelect = false;

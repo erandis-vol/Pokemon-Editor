@@ -36,6 +36,8 @@ namespace Lost
 
         private void openToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            // Get ROM filename
+            string filename = string.Empty;
             using (var dialog = new OpenFileDialog())
             {
                 dialog.Title = "Open ROM";
@@ -44,6 +46,32 @@ namespace Lost
 
                 if (dialog.ShowDialog() != DialogResult.OK)
                     return;
+
+                filename = dialog.FileName;
+            }
+
+            // Try to load the ROM
+            try
+            {
+                OpenROM(filename);
+                LoadFirst();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Unable to load ROM:\n" + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            // Set label
+            lblROM.Text = $"ROM: {rom.Name}\nCode: {rom.Code}\nPokémon: {pokemonCount}";
+
+            // Populate Pokemon list
+            listPokemon.Items.Clear();
+            for (int i = 0; i < names.Length; i++)
+            {
+                var ix = new ListViewItem($"{i + 1:X3}");
+                ix.SubItems.Add(names[i]);
+                listPokemon.Items.Add(ix);
             }
         }
 

@@ -18,5 +18,13 @@ namespace Lost
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new MainForm());
         }
+
+        /// <summary>
+        /// Returns the installation directory.
+        /// </summary>
+        public static string GetPath()
+        {
+            return AppDomain.CurrentDomain.BaseDirectory;
+        }
     }
 }
