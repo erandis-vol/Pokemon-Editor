@@ -12,7 +12,7 @@ using GBAHL.Text;
 
 namespace Lost
 {
-    partial class MainForm
+    partial class s
     {
         private Settings romSettings;
 
