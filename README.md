@@ -1,5 +1,5 @@
-# (Hopeless) Pokémon Editor
-Copyright (c) 2014 - 2017 lost
+# Pokémon Editor
+Copyright (c) 2014-2017 erandis-vol
 
 An Pokémon editor for 3rd generation Pokémon games. Currently being rewritten.
 
